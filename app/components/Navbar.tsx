@@ -1,6 +1,6 @@
 "use client";
 import Link from 'next/link';
-import Image from 'next/image'; // Importando o componente de imagem
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
@@ -10,17 +10,18 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between"> 
+        {/* Aumentei a barra (h-24) para caber uma logo maior confortavelmente */}
         
         {/* LOGO DE IMAGEM */}
         <Link href="/" className="flex items-center">
           <Image 
-            src="/logo-lampejo.png" // O caminho começa com / e já olha dentro da pasta public
+            src="/logo-lampejo.png" 
             alt="Lampejo Logo"
-            width={150} // Largura base para o Next otimizar
-            height={150} // Altura base para o Next otimizar
-            className="w-auto h-10 md:h-12 object-contain hover:opacity-80 transition-opacity" // H-10 no celular, H-12 no PC
-            priority // Carrega a logo imediatamente
+            width={200} // Aumentei a base de renderização
+            height={200}
+            className="w-auto h-14 md:h-20 object-contain hover:opacity-80 transition-opacity" // H-20 = 80px (Bem grande)
+            priority 
           />
         </Link>
 
@@ -43,7 +44,7 @@ export default function Navbar() {
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="md:hidden absolute top-20 left-0 w-full bg-background border-b border-white/10 p-6 flex flex-col gap-6 text-center uppercase tracking-widest"
+          className="md:hidden absolute top-24 left-0 w-full bg-background border-b border-white/10 p-6 flex flex-col gap-6 text-center uppercase tracking-widest"
         >
           <Link href="/portfolio" onClick={() => setIsOpen(false)}>Portfólio</Link>
           <Link href="/cursos" onClick={() => setIsOpen(false)}>Academy</Link>
