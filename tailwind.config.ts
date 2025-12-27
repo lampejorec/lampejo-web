@@ -12,17 +12,17 @@ const config: Config = {
         background: "#050505",
         foreground: "#FFFFFF",
       },
-      // --- AQUI ESTÁ A ANIMAÇÃO NECESSÁRIA ---
+      // ADICIONE ESTA PARTE DOS KEYFRAMES
       keyframes: {
         scroll: {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-100%)' },
         },
       },
+      // ADICIONE ESTA PARTE DA ANIMATION
       animation: {
-        scroll: 'scroll 35s linear infinite',
+        scroll: 'scroll 25s linear infinite', // 25s é a velocidade. Aumente para ficar mais lento.
       },
-      // ---------------------------------------
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

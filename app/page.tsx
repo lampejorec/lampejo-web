@@ -1,8 +1,7 @@
 import Link from "next/link";
 import Navbar from "./components/Navbar";
-// Note que removi o "import Image from next/image" pois vamos usar a tag nativa <img>
 
-// CAMINHOS CERTOS (Na raiz da pasta public)
+// CAMINHOS CERTOS (Raiz da pasta public)
 const clients = [
   { name: "NIC.br", logo: "/nicbr.png" },
   { name: "CGI.br", logo: "/cgibr.png" },
@@ -42,7 +41,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SESSÃO 2: CLIENTES (Fundo Branco + Tag IMG Simples) */}
+        {/* SESSÃO 2: CLIENTES (Carrossel Infinito - Versão Final) */}
         <section className="py-20 bg-white overflow-hidden">
           <div className="max-w-full mx-auto text-center">
             <p className="text-sm text-neutral-800 font-bold uppercase tracking-widest mb-12">
@@ -51,32 +50,31 @@ export default function Home() {
             
             <div className="relative flex overflow-x-hidden group py-4">
               
-              {/* Máscaras laterais brancas */}
+              {/* Máscaras laterais brancas para suavizar a entrada/saída */}
               <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-10"></div>
               <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-10"></div>
 
-              {/* FAIXA 1 */}
+              {/* FAIXA 1 (Animada) */}
               <div className="animate-scroll flex items-center gap-16 md:gap-24 pr-16 md:pr-24 whitespace-nowrap will-change-transform">
                 {clients.map((client, index) => (
-                  <div key={index} className="relative h-12 md:h-20 w-auto transition-all flex items-center justify-center hover:scale-105 duration-300">
-                    {/* USANDO A TAG <img /> DO HTML PURO PARA NÃO FALHAR */}
+                  <div key={index} className="relative h-16 md:h-24 w-auto flex items-center justify-center hover:scale-110 transition-transform duration-300">
                     <img 
                       src={client.logo}
-                      alt={`Logo ${client.name}`}
-                      className="h-full w-auto object-contain max-h-12 md:max-h-16"
+                      alt={client.name}
+                      className="h-full w-auto object-contain max-h-12 md:max-h-20"
                     />
                   </div>
                 ))}
               </div>
 
-              {/* FAIXA 2 (Loop) */}
+              {/* FAIXA 2 (Loop Infinito) */}
               <div className="animate-scroll flex items-center gap-16 md:gap-24 pr-16 md:pr-24 whitespace-nowrap will-change-transform" aria-hidden="true">
                 {clients.map((client, index) => (
-                  <div key={`dup-${index}`} className="relative h-12 md:h-20 w-auto transition-all flex items-center justify-center hover:scale-105 duration-300">
+                  <div key={`dup-${index}`} className="relative h-16 md:h-24 w-auto flex items-center justify-center hover:scale-110 transition-transform duration-300">
                     <img 
                       src={client.logo}
-                      alt={`Logo ${client.name}`}
-                      className="h-full w-auto object-contain max-h-12 md:max-h-16"
+                      alt={client.name}
+                      className="h-full w-auto object-contain max-h-12 md:max-h-20"
                     />
                   </div>
                 ))}
