@@ -1,60 +1,167 @@
 import Link from "next/link";
-import Navbar from "../components/Navbar";
-import { COURSES } from "../lib/courses";
+import Image from "next/image";
+import Navbar from "./components/Navbar";
 
-export default function AcademyPage() {
+// Lista atualizada de clientes
+const clients = [
+  { name: "NIC.br", logo: "/clients/nicbr.png" },
+  { name: "CGI.br", logo: "/clients/cgibr.png" },
+  { name: "Safernet", logo: "/clients/safernet.png" },
+  { name: "CAADF", logo: "/clients/caadf.png" },
+  { name: "OAB/DF", logo: "/clients/oabdf.png" },
+  { name: "Estadão", logo: "/clients/estadao.png" },
+  { name: "HY Produções", logo: "/clients/hy.png" },
+];
+
+export default function Home() {
   return (
-    <div className="bg-black min-h-screen text-white">
+    <div className="bg-black text-white selection:bg-purple-500/30 overflow-x-hidden">
       <Navbar />
 
-      <main className="pt-32 px-6 max-w-7xl mx-auto pb-20">
-        
-        {/* Cabeçalho */}
-        <div className="mb-16 text-center space-y-4">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-white">
-            LAMPEJO <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">ACADEMY</span>
-          </h1>
-          <p className="text-neutral-400 text-lg max-w-2xl mx-auto">
-            Não guardamos segredos. Aprenda o fluxo de trabalho, as técnicas e a visão por trás das nossas produções.
-          </p>
-        </div>
+      <main>
+        {/* SESSÃO 1: HERO (Abertura) */}
+        <section className="h-screen flex flex-col justify-center items-center px-6 text-center relative overflow-hidden">
+          
+          {/* Efeito de fundo */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-blue-500/20 blur-[120px] rounded-full opacity-50 pointer-events-none" />
 
-        {/* Grid de Cursos */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {COURSES.map((course) => (
-            <div key={course.id} className="group flex flex-col bg-neutral-900/40 border border-white/10 rounded-3xl overflow-hidden hover:border-white/30 transition-all hover:-translate-y-1">
+          <h1 className="text-5xl md:text-8xl font-bold tracking-tighter mb-8 z-10">
+            AUDIOVISUAL NA <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
+              VELOCIDADE DO AGORA.
+            </span>
+          </h1>
+          
+          <p className="text-xl md:text-2xl text-neutral-400 max-w-3xl mb-12 z-10 leading-relaxed">
+            Nascemos para encurtar a distância entre a ideia e o play. 
+            Sem burocracia. Apenas fluxo e qualidade cinematográfica.
+          </p>
+
+          <div className="flex flex-col md:flex-row gap-6 z-10">
+            <Link 
+              href="/portfolio" 
+              className="bg-white text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-neutral-200 transition-all hover:scale-105"
+            >
+              VER TRABALHOS
+            </Link>
+            <Link 
+              href="/contato" 
+              className="border border-white/20 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white/10 transition-all"
+            >
+              INICIAR PROJETO
+            </Link>
+          </div>
+        </section>
+
+        {/* SESSÃO 2: CLIENTES (Carrossel Infinito) */}
+        <section className="py-16 border-y border-white/5 bg-neutral-900/20 overflow-hidden">
+          <div className="max-w-full mx-auto text-center">
+            <p className="text-sm text-neutral-500 uppercase tracking-widest mb-10">
+              Quem confia no nosso olhar
+            </p>
+            
+            <div className="relative flex overflow-x-hidden group">
               
-              {/* Thumbnail (Simulada com Gradiente) */}
-              <div className={`h-48 w-full bg-gradient-to-br ${course.thumbnailColor} relative`}>
-                <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border border-white/10">
-                  {course.type}
-                </div>
+              {/* Máscaras laterais (Fade out) */}
+              <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-black to-transparent z-10"></div>
+              <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-black to-transparent z-10"></div>
+
+              {/* FAIXA 1 */}
+              <div className="animate-scroll flex items-center gap-16 md:gap-24 pr-16 md:pr-24 whitespace-nowrap opacity-50 group-hover:opacity-100 transition-opacity duration-500 will-change-transform">
+                {clients.map((client, index) => (
+                  <div key={index} className="relative h-12 md:h-16 w-auto grayscale hover:grayscale-0 transition-all flex items-center justify-center">
+                    <Image 
+                      src={client.logo}
+                      alt={`Logo ${client.name}`}
+                      width={200}
+                      height={100}
+                      className="h-full w-auto object-contain"
+                    />
+                  </div>
+                ))}
               </div>
 
-              {/* Conteúdo */}
-              <div className="p-8 flex flex-col flex-1">
-                <h3 className="text-2xl font-bold mb-3 leading-tight group-hover:text-blue-400 transition-colors">
-                  {course.title}
-                </h3>
-                <p className="text-neutral-400 text-sm mb-6 line-clamp-2">
-                  {course.shortDescription}
-                </p>
-                
-                <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
-                  <span className="text-xl font-bold text-white">
-                    {course.price}
-                  </span>
-                  <Link 
-                    href={`/academy/${course.slug}`}
-                    className="bg-white text-black text-sm font-bold px-6 py-3 rounded-full hover:bg-neutral-200 transition-colors"
-                  >
-                    VER DETALHES
-                  </Link>
-                </div>
+              {/* FAIXA 2 (Clone para o loop) */}
+              <div className="animate-scroll flex items-center gap-16 md:gap-24 pr-16 md:pr-24 whitespace-nowrap opacity-50 group-hover:opacity-100 transition-opacity duration-500 will-change-transform" aria-hidden="true">
+                {clients.map((client, index) => (
+                  <div key={`dup-${index}`} className="relative h-12 md:h-16 w-auto grayscale hover:grayscale-0 transition-all flex items-center justify-center">
+                    <Image 
+                      src={client.logo}
+                      alt={`Logo ${client.name}`}
+                      width={200}
+                      height={100}
+                      className="h-full w-auto object-contain"
+                    />
+                  </div>
+                ))}
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* SESSÃO 3: O QUE FAZEMOS */}
+        <section className="py-32 px-6 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            
+            <div className="space-y-8">
+              <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-none">
+                CRIAMOS NARRATIVAS <br />
+                QUE PRENDEM.
+              </h2>
+              <p className="text-lg text-neutral-400 leading-relaxed">
+                Da captação dinâmica com gimbals de alta precisão até a colorimetria que define o mood. Nossa pós-produção não conserta erros, ela eleva a narrativa.
+              </p>
+              
+              <ul className="space-y-4 pt-4">
+                {["Direção de Fotografia", "Edição & Color Grading", "Cobertura de Eventos", "Conteúdo para Redes"].map((item) => (
+                  <li key={item} className="flex items-center gap-4 text-xl font-medium border-b border-white/10 pb-4">
+                    <span className="w-2 h-2 bg-blue-500 rounded-full" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Card Visual Showreel */}
+            <div className="relative h-[600px] bg-neutral-900 rounded-3xl overflow-hidden border border-white/10 group">
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10" />
+              <div className="absolute bottom-8 left-8 z-20">
+                <p className="text-blue-400 font-mono text-xs uppercase tracking-widest mb-2">Showreel 2025</p>
+                <h3 className="text-3xl font-bold text-white">ASSISTA AO MANIFESTO</h3>
+              </div>
+              
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform cursor-pointer">
+                <svg className="w-8 h-8 text-white fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
               </div>
             </div>
-          ))}
-        </div>
+
+          </div>
+        </section>
+
+        {/* SESSÃO 4: ACADEMY TEASER */}
+        <section className="py-32 bg-neutral-900/30 border-t border-white/5">
+          <div className="max-w-7xl mx-auto px-6 text-center">
+            <span className="inline-block px-4 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-400 text-xs font-bold tracking-widest uppercase mb-6">
+              LAMPEJO ACADEMY
+            </span>
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-8">
+              COMPARTILHAMOS <br /> O CÓDIGO FONTE.
+            </h2>
+            <p className="text-xl text-neutral-400 max-w-2xl mx-auto mb-12">
+              Não guardamos segredos. Acesse nossos cursos, LUTs e processos de trabalho na Lampejo Academy.
+            </p>
+            
+            <Link 
+              href="/academy" 
+              className="inline-flex items-center gap-2 text-white border-b border-white pb-1 hover:text-purple-400 hover:border-purple-400 transition-all text-lg"
+            >
+              EXPLORAR A ACADEMY 
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            </Link>
+          </div>
+        </section>
+
       </main>
     </div>
   );
