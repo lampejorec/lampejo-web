@@ -2,10 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import Navbar from "./components/Navbar";
 
-// MANTENDO A PASTA /clientes/ (Se funcionou sem erro, é aqui mesmo)
+// CAMINHOS APONTANDO PARA A PASTA 'clientes' (conforme seu print)
 const clients = [
   { name: "NIC.br", logo: "/clientes/nicbr.png" },
-  { name: "CGI.br", logo: "/clientes/Cgi.br.svg.png" },
+  { name: "CGI.br", logo: "/clientes/cgibr.png" }, // Renomeie o arquivo para este nome
   { name: "Safernet", logo: "/clientes/safernet.png" },
   { name: "CAADF", logo: "/clientes/caadf.png" },
   { name: "OAB/DF", logo: "/clientes/oabdf.png" },
@@ -42,18 +42,18 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SESSÃO 2: CLIENTES (Fundo Escuro para logos brancas aparecerem) */}
-        <section className="py-20 bg-neutral-900 overflow-hidden">
+        {/* SESSÃO 2: CLIENTES (Fundo Branco + Cores Originais) */}
+        <section className="py-20 bg-white overflow-hidden">
           <div className="max-w-full mx-auto text-center">
-            <p className="text-sm text-neutral-400 font-bold uppercase tracking-widest mb-12">
+            <p className="text-sm text-neutral-800 font-bold uppercase tracking-widest mb-12">
               Quem confia no nosso olhar
             </p>
             
             <div className="relative flex overflow-x-hidden group py-4">
               
-              {/* Máscaras laterais ESCURAS (Neutral 900) */}
-              <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-neutral-900 to-transparent z-10"></div>
-              <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-neutral-900 to-transparent z-10"></div>
+              {/* Máscaras laterais brancas */}
+              <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-10"></div>
+              <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-10"></div>
 
               {/* FAIXA 1 */}
               <div className="animate-scroll flex items-center gap-16 md:gap-24 pr-16 md:pr-24 whitespace-nowrap will-change-transform">
@@ -64,9 +64,8 @@ export default function Home() {
                       alt={`Logo ${client.name}`}
                       width={200}
                       height={100}
-                      className="h-full w-auto object-contain brightness-0 invert opacity-70 hover:opacity-100 transition-opacity" 
-                      // O "brightness-0 invert" força a logo a ficar BRANCA caso ela seja preta. 
-                      // Se ela já for branca, isso não atrapalha muito, mas garante visibilidade.
+                      className="h-full w-auto object-contain" 
+                      // Removi todos os filtros de cor. Vai mostrar a imagem original.
                     />
                   </div>
                 ))}
@@ -81,7 +80,7 @@ export default function Home() {
                       alt={`Logo ${client.name}`}
                       width={200}
                       height={100}
-                      className="h-full w-auto object-contain brightness-0 invert opacity-70 hover:opacity-100 transition-opacity"
+                      className="h-full w-auto object-contain"
                     />
                   </div>
                 ))}
