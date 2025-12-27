@@ -41,9 +41,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- O DEGRADÊ MÁGICO --- */}
-        {/* Essa div faz a transição suave do Preto para o Branco */}
-        <div className="w-full h-32 bg-gradient-to-b from-black to-white pointer-events-none" />
+        {/* --- TRANSITION 1: PRETO PARA BRANCO (SUAVE) --- */}
+        {/* Aumentei para h-64 para ficar bem mais suave */}
+        <div className="w-full h-64 bg-gradient-to-b from-black to-white pointer-events-none" />
 
         {/* SESSÃO 2: CLIENTES (Fundo Branco) */}
         <section className="pb-20 pt-10 bg-white overflow-hidden">
@@ -55,7 +55,7 @@ export default function Home() {
             
             <div className="flex overflow-hidden relative w-full group">
               
-              {/* Máscaras laterais */}
+              {/* Máscaras laterais brancas */}
               <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
               <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
 
@@ -63,10 +63,11 @@ export default function Home() {
               <div className="flex animate-scroll min-w-full flex-shrink-0 justify-around items-center gap-10 px-10">
                 {clients.map((client, index) => (
                   <div key={index} className="flex items-center justify-center w-32 md:w-48 h-24">
+                    {/* REMOVIDO O 'grayscale' - Logos sempre coloridas */}
                     <img 
                       src={client.logo}
                       alt={client.name}
-                      className="max-h-16 w-auto object-contain hover:scale-110 transition-transform duration-300 filter grayscale hover:grayscale-0"
+                      className="max-h-16 w-auto object-contain hover:scale-110 transition-transform duration-300"
                     />
                   </div>
                 ))}
@@ -76,10 +77,11 @@ export default function Home() {
               <div className="flex animate-scroll min-w-full flex-shrink-0 justify-around items-center gap-10 px-10" aria-hidden="true">
                 {clients.map((client, index) => (
                   <div key={`dup-${index}`} className="flex items-center justify-center w-32 md:w-48 h-24">
+                    {/* REMOVIDO O 'grayscale' */}
                     <img 
                       src={client.logo}
                       alt={client.name}
-                      className="max-h-16 w-auto object-contain hover:scale-110 transition-transform duration-300 filter grayscale hover:grayscale-0"
+                      className="max-h-16 w-auto object-contain hover:scale-110 transition-transform duration-300"
                     />
                   </div>
                 ))}
@@ -89,8 +91,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* OUTRO DEGRADÊ INVERSO (Branco para Preto) para voltar ao tema dark */}
-        <div className="w-full h-32 bg-gradient-to-b from-white to-black pointer-events-none" />
+        {/* --- TRANSITION 2: BRANCO PARA PRETO (SUAVE) --- */}
+        {/* Aumentei para h-64 também */}
+        <div className="w-full h-64 bg-gradient-to-b from-white to-black pointer-events-none" />
 
         {/* SESSÃO 3: O QUE FAZEMOS */}
         <section className="py-32 px-6 max-w-7xl mx-auto">
