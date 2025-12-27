@@ -43,23 +43,21 @@ export default function Home() {
         </section>
 
         {/* SESSÃO 2: CLIENTES (Carrossel com FUNDO BRANCO) */}
-        <section className="py-20 bg-white overflow-hidden"> { /* MUDANÇA AQUI: bg-white */ }
+        <section className="py-20 bg-white overflow-hidden">
           <div className="max-w-full mx-auto text-center">
-            { /* MUDANÇA AQUI: Texto escuro */ }
             <p className="text-sm text-neutral-800 font-bold uppercase tracking-widest mb-12">
               Quem confia no nosso olhar
             </p>
             
             <div className="relative flex overflow-x-hidden group py-4">
               
-              {/* Máscaras laterais BRANCAS para suavizar */}
+              {/* Máscaras laterais BRANCAS */}
               <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-10"></div>
               <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-10"></div>
 
               {/* FAIXA 1 */}
               <div className="animate-scroll flex items-center gap-16 md:gap-24 pr-16 md:pr-24 whitespace-nowrap will-change-transform">
                 {clients.map((client, index) => (
-                  {/* Removi o grayscale para as logos ficarem coloridas no fundo branco */}
                   <div key={index} className="relative h-12 md:h-20 w-auto transition-all flex items-center justify-center hover:scale-105 duration-300">
                     <Image 
                       src={client.logo}
@@ -133,4 +131,19 @@ export default function Home() {
             <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-8">
               COMPARTILHAMOS <br /> O CÓDIGO FONTE.
             </h2>
-            <p className="text-xl text-neutral-4
+            <p className="text-xl text-neutral-400 max-w-2xl mx-auto mb-12">
+              Não guardamos segredos. Acesse nossos cursos, LUTs e processos de trabalho na Lampejo Academy.
+            </p>
+            <Link 
+              href="/academy" 
+              className="inline-flex items-center gap-2 text-white border-b border-white pb-1 hover:text-purple-400 hover:border-purple-400 transition-all text-lg"
+            >
+              EXPLORAR A ACADEMY 
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            </Link>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
