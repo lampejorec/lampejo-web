@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Navbar from "./components/Navbar";
 
-// AGORA OS CAMINHOS SÃO DIRETOS NA RAIZ (Sem /clientes/)
+// AGORA VAI FUNCIONAR: Caminhos diretos na raiz /
 const clients = [
   { name: "NIC.br", logo: "/nicbr.png" },
   { name: "CGI.br", logo: "/cgibr.png" },
@@ -42,18 +42,18 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SESSÃO 2: CLIENTES */}
-        {/* Fundo VERMELHO TEMPORÁRIO para confirmar que o código atualizou */}
-        <section className="py-20 bg-red-900 overflow-hidden">
+        {/* SESSÃO 2: CLIENTES (Fundo Branco para Logos Coloridas) */}
+        <section className="py-20 bg-white overflow-hidden">
           <div className="max-w-full mx-auto text-center">
-            <p className="text-sm text-white font-bold uppercase tracking-widest mb-12">
-              Teste de Deploy (Ficará Vermelho se funcionar)
+            <p className="text-sm text-neutral-800 font-bold uppercase tracking-widest mb-12">
+              Quem confia no nosso olhar
             </p>
             
             <div className="relative flex overflow-x-hidden group py-4">
               
-              <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-red-900 to-transparent z-10"></div>
-              <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-red-900 to-transparent z-10"></div>
+              {/* Máscaras laterais brancas */}
+              <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-10"></div>
+              <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-10"></div>
 
               {/* FAIXA 1 */}
               <div className="animate-scroll flex items-center gap-16 md:gap-24 pr-16 md:pr-24 whitespace-nowrap will-change-transform">
@@ -65,13 +65,12 @@ export default function Home() {
                       width={200}
                       height={100}
                       className="h-full w-auto object-contain"
-                      unoptimized={true} // Força o carregamento bruto da imagem
                     />
                   </div>
                 ))}
               </div>
 
-              {/* FAIXA 2 */}
+              {/* FAIXA 2 (Loop) */}
               <div className="animate-scroll flex items-center gap-16 md:gap-24 pr-16 md:pr-24 whitespace-nowrap will-change-transform" aria-hidden="true">
                 {clients.map((client, index) => (
                   <div key={`dup-${index}`} className="relative h-12 md:h-20 w-auto transition-all flex items-center justify-center hover:scale-105 duration-300">
@@ -81,7 +80,6 @@ export default function Home() {
                       width={200}
                       height={100}
                       className="h-full w-auto object-contain"
-                      unoptimized={true}
                     />
                   </div>
                 ))}
