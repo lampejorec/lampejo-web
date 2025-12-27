@@ -1,10 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Clock, Share2 } from "lucide-react";
-import Navbar from "../../../components/Navbar"; // Ajuste de importação para voltar 3 níveis
+import Navbar from "../../components/Navbar"; // CORRIGIDO: Apenas 2 níveis (../../)
 import { notFound } from "next/navigation";
 
-// --- DADOS DOS ARTIGOS (Duplicado para garantir o funcionamento independente) ---
+// --- DADOS DOS ARTIGOS ---
 const articles = [
   {
     id: 1,
