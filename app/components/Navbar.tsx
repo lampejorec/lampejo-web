@@ -1,130 +1,114 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Menu, X } from "lucide-react";
+import Image from "next/image";
+import { usePathname } from "next/navigation"; // IMPORTANTE: Importamos este hook
 
 export default function Navbar() {
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const [isAtTop, setIsAtTop] = useState(true);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname(); // Pegamos o caminho atual (ex: "/portfolio")
 
-  // Lógica de Scroll (Esconder/Mostrar Navbar)
+  // Detecta scroll para mudar o fundo da navbar
   useEffect(() => {
-    const controlNavbar = () => {
-      if (typeof window !== 'undefined') {
-        const currentScrollY = window.scrollY;
-
-        // Verifica se está no topo
-        if (currentScrollY < 10) {
-          setIsAtTop(true);
-        } else {
-          setIsAtTop(false);
-        }
-
-        // Esconder ao descer, mostrar ao subir
-        if (currentScrollY > lastScrollY && currentScrollY > 100 && !isMobileMenuOpen) {
-          setIsVisible(false);
-        } else {
-          setIsVisible(true);
-        }
-
-        setLastScrollY(currentScrollY);
-      }
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
     };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-    window.addEventListener('scroll', controlNavbar);
-    return () => window.removeEventListener('scroll', controlNavbar);
-  }, [lastScrollY, isMobileMenuOpen]);
+  const navLinks = [
+    { title: "HOME", href: "/" },
+    { title: "PORTFÓLIO", href: "/portfolio" },
+    { title: "INSIGHTS", href: "/insights" },
+    { title: "ACADEMY", href: "/academy" },
+    { title: "CONTATO", href: "/contato" },
+  ];
 
-  // Função para fechar o menu ao clicar em um link
-  const closeMenu = () => setIsMobileMenuOpen(false);
+  // Função auxiliar para verificar se o link está ativo
+  const isActive = (path: string) => {
+    if (path === "/" && pathname !== "/") return false;
+    return pathname.startsWith(path);
+  };
 
   return (
-    <>
-      <nav 
-        className={`fixed w-full z-50 top-0 left-0 flex items-center justify-between px-6 md:px-12 transition-all duration-500 ease-in-out
-        ${isVisible ? "translate-y-0" : "-translate-y-full"} 
-        ${isAtTop && !isMobileMenuOpen ? "bg-transparent py-8" : "bg-black/90 backdrop-blur-md py-4 border-b border-white/5"}
-        `}
-      >
-        
+    <header
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        scrolled ? "bg-black/80 backdrop-blur-md py-4 border-b border-white/10" : "bg-transparent py-6"
+      }`}
+    >
+      <div className="flex items-center justify-between max-w-7xl mx-auto px-6">
         {/* LOGO */}
-        <div className="z-50 relative">
-          <Link 
-            href="/" 
-            className="text-2xl font-bold tracking-tighter text-white hover:opacity-80 transition-opacity"
-            onClick={closeMenu}
+        <Link href="/" className="relative w-32 h-10">
+           {/* Se quiser usar a logo de imagem, descomente abaixo */}
+           {/* <Image src="/logo-white.png" alt="Lampejo" fill className="object-contain" priority /> */}
+           <span className="font-bold text-2xl tracking-tighter text-white">LAMPEJO</span>
+        </Link>
+
+        {/* DESKTOP MENU */}
+        <nav className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
+            <Link
+              key={link.title}
+              href={link.href}
+              // APLICAÇÃO DA CLASSE CONDICIONAL
+              className={`text-sm font-bold tracking-widest transition-colors relative group ${
+                isActive(link.href) 
+                  ? "text-purple-400" // Cor se estiver ativo
+                  : "text-white/70 hover:text-white" // Cor normal
+              }`}
+            >
+              {link.title}
+              {/* Linha animada embaixo do link ativo */}
+              <span className={`absolute -bottom-2 left-0 h-[2px] bg-purple-400 transition-all duration-300 ${
+                isActive(link.href) ? "w-full" : "w-0 group-hover:w-full"
+              }`} />
+            </Link>
+          ))}
+          <Link
+            href="/links"
+             className="ml-4 bg-white text-black px-6 py-2 rounded-fulltext-sm font-bold tracking-widest hover:bg-neutral-200 transition-all text-sm rounded-full"
           >
-            LAMPEJO
+            LINKS
           </Link>
-        </div>
+        </nav>
 
-        {/* MENU DESKTOP (Escondido no celular) */}
-        <div className="hidden md:flex items-center gap-10">
-          <Link href="/" className="text-xs font-bold tracking-widest text-neutral-400 hover:text-white transition-colors uppercase">Início</Link>
-          <Link href="/portfolio" className="text-xs font-bold tracking-widest text-neutral-400 hover:text-white transition-colors uppercase">Portfólio</Link>
-          <Link href="/insights" className="text-xs font-bold tracking-widest text-neutral-400 hover:text-white transition-colors uppercase">Insights</Link>
-          <Link href="/academy" className="text-xs font-bold tracking-widest text-purple-400 hover:text-white transition-colors uppercase">Academy</Link>
-          <Link href="/contato" className="text-xs font-bold tracking-widest text-neutral-400 hover:text-white transition-colors uppercase">Contato</Link>
-        </div>
-
-        {/* BOTÃO HAMBURGUER (Aparece só no celular) */}
-        <button 
-          className="md:hidden z-50 text-white font-bold tracking-widest text-sm uppercase focus:outline-none"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        {/* MOBILE MENU BUTTON */}
+        <button
+          className="md:hidden text-white p-2"
+          onClick={() => setIsOpen(!isOpen)}
         >
-          {isMobileMenuOpen ? "FECHAR" : "MENU"}
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
-      </nav>
-
-      {/* OVERLAY MOBILE (Tela cheia preta com os links) */}
-      <div 
-        className={`fixed inset-0 bg-black z-40 flex flex-col justify-center items-center gap-8 transition-all duration-500 md:hidden
-        ${isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}
-        `}
-      >
-        <Link 
-          href="/" 
-          onClick={closeMenu}
-          className="text-3xl font-bold text-white hover:text-blue-500 transition-colors tracking-tighter"
-        >
-          INÍCIO
-        </Link>
-
-        <Link 
-          href="/portfolio" 
-          onClick={closeMenu}
-          className="text-3xl font-bold text-white hover:text-blue-500 transition-colors tracking-tighter"
-        >
-          PORTFÓLIO
-        </Link>
-        
-        <Link 
-          href="/insights" 
-          onClick={closeMenu}
-          className="text-3xl font-bold text-white hover:text-blue-500 transition-colors tracking-tighter"
-        >
-          INSIGHTS
-        </Link>
-        
-        <Link 
-          href="/academy" 
-          onClick={closeMenu}
-          className="text-3xl font-bold text-purple-500 hover:text-white transition-colors tracking-tighter"
-        >
-          ACADEMY
-        </Link>
-        
-        <Link 
-          href="/contato" 
-          onClick={closeMenu}
-          className="text-3xl font-bold text-white hover:text-blue-500 transition-colors tracking-tighter"
-        >
-          CONTATO
-        </Link>
+        {/* MOBILE MENU OVERLAY */}
+        {isOpen && (
+          <div className="fixed inset-0 top-[70px] bg-black/95 backdrop-blur-xl z-40 flex flex-col items-center justify-center gap-8 md:hidden animate-in slide-in-from-top-5">
+            {navLinks.map((link) => (
+              <Link
+                key={link.title}
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+                className={`text-2xl font-bold tracking-tighter transition-colors ${
+                  isActive(link.href) ? "text-purple-400" : "text-white/70 hover:text-white"
+                }`}
+              >
+                {link.title}
+              </Link>
+            ))}
+             <Link
+                href="/links"
+                onClick={() => setIsOpen(false)}
+                 className="mt-4 bg-white text-black px-8 py-3 rounded-full text-lg font-bold tracking-widest hover:bg-neutral-200 transition-all"
+              >
+                LINKS
+              </Link>
+          </div>
+        )}
       </div>
-    </>
+    </header>
   );
 }
