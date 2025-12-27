@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ArrowLeft, Clock, Share2 } from "lucide-react";
 import Navbar from "../../components/Navbar";
 import { notFound } from "next/navigation";
+import ShareButton from "@/app/components/ShareButton";
 
 // --- DADOS DOS ARTIGOS ---
 const articles = [
@@ -229,15 +230,15 @@ export default async function ArticlePage({
             </p>
           </div>
 
-          {/* RODAPÉ DO ARTIGO */}
-          <div className="mt-20 pt-10 border-t border-white/10 flex justify-between items-center">
+          {/* RODAPÉ DO ARTIGO - SUBSTITUA ESSA PARTE FINAL */}
+          <div className="mt-20 pt-10 border-t border-white/10 flex flex-col md:flex-row gap-6 justify-between items-center">
             <div className="text-sm text-neutral-500">
               Escrito por <strong className="text-white">Equipe Lampejo</strong>
             </div>
-            <button className="flex items-center gap-2 text-sm font-bold text-white hover:text-purple-400 transition-colors">
-              <Share2 className="w-4 h-4" />
-              COMPARTILHAR
-            </button>
+            
+            {/* O BOTÃO NOVO */}
+            <ShareButton title={article.title} description={article.description} />
+            
           </div>
         </div>
       </article>
