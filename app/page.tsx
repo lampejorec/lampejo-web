@@ -1,8 +1,8 @@
 import Link from "next/link";
-import Image from "next/image";
 import Navbar from "./components/Navbar";
+// Note que removi o "import Image from next/image" pois vamos usar a tag nativa <img>
 
-// AGORA VAI FUNCIONAR: Caminhos diretos na raiz /
+// CAMINHOS CERTOS (Na raiz da pasta public)
 const clients = [
   { name: "NIC.br", logo: "/nicbr.png" },
   { name: "CGI.br", logo: "/cgibr.png" },
@@ -42,7 +42,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SESSÃO 2: CLIENTES (Fundo Branco para Logos Coloridas) */}
+        {/* SESSÃO 2: CLIENTES (Fundo Branco + Tag IMG Simples) */}
         <section className="py-20 bg-white overflow-hidden">
           <div className="max-w-full mx-auto text-center">
             <p className="text-sm text-neutral-800 font-bold uppercase tracking-widest mb-12">
@@ -59,12 +59,11 @@ export default function Home() {
               <div className="animate-scroll flex items-center gap-16 md:gap-24 pr-16 md:pr-24 whitespace-nowrap will-change-transform">
                 {clients.map((client, index) => (
                   <div key={index} className="relative h-12 md:h-20 w-auto transition-all flex items-center justify-center hover:scale-105 duration-300">
-                    <Image 
+                    {/* USANDO A TAG <img /> DO HTML PURO PARA NÃO FALHAR */}
+                    <img 
                       src={client.logo}
                       alt={`Logo ${client.name}`}
-                      width={200}
-                      height={100}
-                      className="h-full w-auto object-contain"
+                      className="h-full w-auto object-contain max-h-12 md:max-h-16"
                     />
                   </div>
                 ))}
@@ -74,12 +73,10 @@ export default function Home() {
               <div className="animate-scroll flex items-center gap-16 md:gap-24 pr-16 md:pr-24 whitespace-nowrap will-change-transform" aria-hidden="true">
                 {clients.map((client, index) => (
                   <div key={`dup-${index}`} className="relative h-12 md:h-20 w-auto transition-all flex items-center justify-center hover:scale-105 duration-300">
-                    <Image 
+                    <img 
                       src={client.logo}
                       alt={`Logo ${client.name}`}
-                      width={200}
-                      height={100}
-                      className="h-full w-auto object-contain"
+                      className="h-full w-auto object-contain max-h-12 md:max-h-16"
                     />
                   </div>
                 ))}
