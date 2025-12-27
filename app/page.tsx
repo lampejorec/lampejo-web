@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Navbar from "./components/Navbar";
 
+// CAMINHOS CERTOS (Raiz da pasta public)
 const clients = [
   { name: "NIC.br", logo: "/nicbr.png" },
   { name: "CGI.br", logo: "/cgibr.png" },
@@ -15,16 +16,6 @@ export default function Home() {
   return (
     <div className="bg-black text-white selection:bg-purple-500/30 overflow-x-hidden">
       <Navbar />
-
-      <style jsx global>{`
-        @keyframes scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-100%); }
-        }
-        .animate-scroll-custom {
-          animation: scroll 30s linear infinite;
-        }
-      `}</style>
 
       <main>
         {/* SESSÃO 1: HERO */}
@@ -50,41 +41,41 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SESSÃO 2: CLIENTES (Corrigida e Blindada) */}
+        {/* SESSÃO 2: CLIENTES (Corrigida) */}
         <section className="py-20 bg-white overflow-hidden">
           <div className="max-w-full mx-auto">
-            {/* Título com cor PRETA explícita */}
+            {/* Título com cor PRETA */}
             <p className="text-sm text-black font-bold uppercase tracking-widest mb-12 text-center">
               Quem confia no nosso olhar
             </p>
             
-            <div className="flex overflow-hidden relative w-full">
+            <div className="flex overflow-hidden relative w-full group">
               
               {/* Máscaras laterais */}
               <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
               <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
 
               {/* FAIXA 1 */}
-              <div className="flex animate-scroll-custom min-w-full flex-shrink-0 justify-around items-center gap-10 px-10">
+              <div className="flex animate-scroll min-w-full flex-shrink-0 justify-around items-center gap-10 px-10">
                 {clients.map((client, index) => (
                   <div key={index} className="flex items-center justify-center w-32 md:w-48">
                     <img 
                       src={client.logo}
                       alt={client.name}
-                      className="max-h-12 md:max-h-20 w-auto object-contain"
+                      className="max-h-12 md:max-h-20 w-auto object-contain hover:scale-110 transition-transform duration-300"
                     />
                   </div>
                 ))}
               </div>
 
               {/* FAIXA 2 (Clone para loop) */}
-              <div className="flex animate-scroll-custom min-w-full flex-shrink-0 justify-around items-center gap-10 px-10" aria-hidden="true">
+              <div className="flex animate-scroll min-w-full flex-shrink-0 justify-around items-center gap-10 px-10" aria-hidden="true">
                 {clients.map((client, index) => (
                   <div key={`dup-${index}`} className="flex items-center justify-center w-32 md:w-48">
                     <img 
                       src={client.logo}
                       alt={client.name}
-                      className="max-h-12 md:max-h-20 w-auto object-contain"
+                      className="max-h-12 md:max-h-20 w-auto object-contain hover:scale-110 transition-transform duration-300"
                     />
                   </div>
                 ))}
