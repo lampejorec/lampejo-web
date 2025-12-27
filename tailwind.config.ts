@@ -12,7 +12,7 @@ const config: Config = {
         background: "#050505",
         foreground: "#FFFFFF",
       },
-      // --- A PARTE MÁGICA QUE FALTAVA ---
+      // --- AQUI ESTÁ A ANIMAÇÃO NECESSÁRIA ---
       keyframes: {
         scroll: {
           '0%': { transform: 'translateX(0)' },
@@ -22,7 +22,7 @@ const config: Config = {
       animation: {
         scroll: 'scroll 35s linear infinite',
       },
-      // ----------------------------------
+      // ---------------------------------------
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
