@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CheckCircle2, MessageSquare, Download, Play, Lock } from "lucide-react";
 import Image from "next/image";
 
-// BANCO DE DADOS FAKE
+// BANCO DE DADOS (Movido para cá)
 const PROJECTS: any = {
   "nicbr": {
     client: "NIC.br",
@@ -24,10 +24,8 @@ const PROJECTS: any = {
   }
 };
 
-export default function ApprovalPage({ params }: { params: { cliente: string } }) {
-  const slug = params.cliente; 
-  const project = PROJECTS[slug];
-
+export default function ApprovalClient({ cliente }: { cliente: string }) {
+  const project = PROJECTS[cliente];
   const [password, setPassword] = useState("");
   const [isUnlocked, setIsUnlocked] = useState(false);
 
@@ -68,7 +66,6 @@ export default function ApprovalPage({ params }: { params: { cliente: string } }
 
   return (
     <div className="min-h-screen bg-[#050505] text-white">
-      {/* HEADER */}
       <header className="border-b border-white/10 p-6 flex justify-between items-center bg-black/50 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center overflow-hidden">
@@ -138,14 +135,4 @@ export default function ApprovalPage({ params }: { params: { cliente: string } }
       </main>
     </div>
   );
-}
-
-// --- A MÁGICA: ISSO CORRIGE O ERRO DE BUILD ---
-export async function generateStaticParams() {
-  // Retorna a lista de "clientes" que devem virar páginas estáticas HTML
-  // Isso deve bater com as chaves do objeto PROJECTS lá em cima
-  return [
-    { cliente: "nicbr" },
-    { cliente: "estadao" }
-  ];
 }
