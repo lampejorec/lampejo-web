@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { 
   Trash2, Plus, Printer, Lock, DollarSign, Layout, PieChart, ChevronLeft, ChevronRight,
   ArrowUpRight, ArrowDownRight, Clock, Tag, List, Type, ArrowRight, X, Edit, CheckCircle2,
-  Calendar, User, FileText, Package // <--- Package icon para entregas
+  Calendar, User, FileText, Package, Home, AlertCircle, TrendingUp
 } from "lucide-react";
 import Image from "next/image";
 
@@ -27,11 +27,10 @@ const IMPOSTO_PROVISAO = 0.10;
 
 // --- TIPOS ---
 interface Transaction {
-  id: number; description: string; category: string; amount: number;
+  id: number; description: string; deliveryDetails?: string; category: string; amount: number;
   type: "income" | "expense"; date: string; hasInvoice: boolean;
 }
 
-// ADICIONADO TIPO 'DELIVERABLES'
 type BlockType = "header" | "text" | "deliverables" | "items" | "total";
 interface ProposalBlock { id: string; type: BlockType; content: any; }
 
@@ -45,13 +44,14 @@ export default function AdminPage() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [activeTab, setActiveTab] = useState<"projects" | "finance" | "proposal">("projects");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "projects" | "finance" | "proposal">("dashboard");
 
   // --- FINANCEIRO ---
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showReport, setShowReport] = useState(false);
   const [newTransDesc, setNewTransDesc] = useState("");
+  const [newTransDelivery, setNewTransDelivery] = useState("");
   const [newTransAmount, setNewTransAmount] = useState("");
   const [newTransType, setNewTransType] = useState<"income" | "expense">("income");
   const [newTransDate, setNewTransDate] = useState(new Date().toISOString().split('T')[0]);
@@ -69,7 +69,6 @@ export default function AdminPage() {
   const [blocks, setBlocks] = useState<ProposalBlock[]>([
     { id: "1", type: "header", content: { title: "Projeto Institucional", subtitle: "Narrativa Visual" } },
     { id: "2", type: "text", content: "A Lampejo propõe uma abordagem cinematográfica..." },
-    // EXEMPLO DE BLOCO DE ENTREGAS JÁ INICIADO
     { id: "3", type: "deliverables", content: "- 1 Vídeo Manifesto (30s)\n- 5 Pílulas para Reels\n- Cobertura Fotográfica" },
     { id: "4", type: "items", content: [{ name: "Diária de Captação", price: 2500 }] },
     { id: "5", type: "total", content: { obs: "Validade de 10 dias" } }
@@ -98,29 +97,31 @@ export default function AdminPage() {
     const user = USERS[email as keyof typeof USERS];
     if (user && user.pass === password) {
       setCurrentUser(user);
-      if (user.role !== "admin") setActiveTab("projects");
+      // Se for time, vai pro dashboard (ou projects)
+      if (user.role !== "admin" && activeTab === "finance") setActiveTab("dashboard");
     } else alert("Dados incorretos.");
   };
 
-  // FINANCEIRO: CHANGE MONTH FIX
+  // FINANCEIRO
   const changeMonth = (offset: number) => {
     const newDate = new Date(selectedDate);
     newDate.setMonth(newDate.getMonth() + offset);
     setSelectedDate(newDate);
-    
-    // ATUALIZA A DATA DO FORMULÁRIO PARA O MÊS SELECIONADO (DIA 01 ou MANTÉM DIA ATUAL SE MESMO MÊS)
     const today = new Date();
     let day = today.getDate();
-    // Se o mês selecionado não é o atual, seta dia 01 para evitar confusão, ou mantém dia se preferir
-    // Vamos setar para o dia atual mas no mês novo, ou dia 28 se for fevereiro, pra evitar crash de data
     const safeDay = day > 28 ? 28 : day; 
     const newFormDate = new Date(newDate.getFullYear(), newDate.getMonth(), safeDay);
-    setNewTransDate(newFormDate.toISOString().split('T')[0]);
+    const offsetDate = new Date(newFormDate.getTime() - (newFormDate.getTimezoneOffset() * 60000));
+    setNewTransDate(offsetDate.toISOString().split('T')[0]);
   };
 
   const getMonthData = (date: Date) => transactions.filter(t => {
-    const d = new Date(t.date); return d.getMonth() === date.getMonth() && d.getFullYear() === date.getFullYear();
+    const [y, m, d] = t.date.split('-').map(Number);
+    const tMonth = `${y}-${String(m).padStart(2, '0')}`;
+    const sMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    return tMonth === sMonth;
   });
+  
   const currentMonthTrans = getMonthData(selectedDate);
   const prevDate = new Date(selectedDate); prevDate.setMonth(prevDate.getMonth() - 1);
   const prevMonthTrans = getMonthData(prevDate);
@@ -138,10 +139,10 @@ export default function AdminPage() {
   const addTrans = () => {
     if(!newTransDesc || !newTransAmount) return;
     setTransactions([...transactions, {
-      id: Date.now(), description: newTransDesc, amount: Number(newTransAmount),
-      type: newTransType, date: newTransDate, hasInvoice: newTransInvoice, category: "Geral"
+      id: Date.now(), description: newTransDesc, deliveryDetails: newTransDelivery,
+      amount: Number(newTransAmount), type: newTransType, date: newTransDate, hasInvoice: newTransInvoice, category: "Geral"
     }]);
-    setNewTransDesc(""); setNewTransAmount("");
+    setNewTransDesc(""); setNewTransDelivery(""); setNewTransAmount("");
   };
 
   // KANBAN
@@ -169,15 +170,12 @@ export default function AdminPage() {
   // PROPOSTA
   const getLogo = (name: string) => CLIENT_LOGOS[name.toLowerCase().trim()] || null;
   const updateBlock = (id: string, content: any) => setBlocks(blocks.map(b => b.id === id ? { ...b, content } : b));
-  
   const addBlock = (type: BlockType) => {
-    // Inicialização inteligente do conteúdo
     let content: any = "";
     if (type === "items") content = [{name:"", price:0}];
     if (type === "header") content = { title: "Título", subtitle: "Subtítulo" };
     if (type === "total") content = { obs: "" };
-    if (type === "deliverables") content = "- Item 1\n- Item 2"; // Template padrão para entregas
-
+    if (type === "deliverables") content = "- Item 1\n- Item 2"; 
     setBlocks([...blocks, { id: Date.now().toString(), type, content }]);
   };
 
@@ -207,6 +205,7 @@ export default function AdminPage() {
             <div><p className="text-sm font-bold">{currentUser.name}</p><p className="text-[10px] text-neutral-500 uppercase font-bold">{currentUser.role}</p></div>
           </div>
           <nav className="space-y-2">
+            <button onClick={() => setActiveTab("dashboard")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === "dashboard" ? "bg-white text-black" : "text-neutral-400 hover:bg-white/5"}`}><Home size={18}/> Visão Geral</button>
             <button onClick={() => setActiveTab("projects")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === "projects" ? "bg-white text-black" : "text-neutral-400 hover:bg-white/5"}`}><Layout size={18}/> Projetos</button>
             <button onClick={() => setActiveTab("proposal")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === "proposal" ? "bg-white text-black" : "text-neutral-400 hover:bg-white/5"}`}><FileText size={18}/> Propostas</button>
             {currentUser.role === "admin" && (
@@ -218,6 +217,68 @@ export default function AdminPage() {
 
       <main className="flex-1 overflow-y-auto relative custom-scrollbar">
         
+        {/* --- DASHBOARD (COMMAND CENTER) --- */}
+        {activeTab === "dashboard" && (
+          <div className="p-8 max-w-7xl mx-auto">
+            <h2 className="text-4xl font-bold tracking-tighter mb-2">Bom dia, {currentUser.name}.</h2>
+            <p className="text-neutral-400 mb-12">Aqui está o resumo da operação Lampejo hoje.</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+              {/* Card 1: Tarefas Urgentes */}
+              <div className="bg-neutral-900 border border-white/10 p-6 rounded-2xl relative overflow-hidden">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="p-3 bg-red-500/10 rounded-lg text-red-500"><AlertCircle size={24}/></div>
+                  <span className="text-4xl font-bold">{tasks.filter(t => t.priority === 'high' && t.status !== 'done').length}</span>
+                </div>
+                <h3 className="font-bold text-lg mb-1">Alta Prioridade</h3>
+                <p className="text-sm text-neutral-500">Tarefas urgentes pendentes</p>
+              </div>
+
+              {/* Card 2: Em Produção */}
+              <div className="bg-neutral-900 border border-white/10 p-6 rounded-2xl">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="p-3 bg-blue-500/10 rounded-lg text-blue-500"><Layout size={24}/></div>
+                  <span className="text-4xl font-bold">{tasks.filter(t => t.status === 'doing').length}</span>
+                </div>
+                <h3 className="font-bold text-lg mb-1">Em Produção</h3>
+                <p className="text-sm text-neutral-500">Projetos ativos no momento</p>
+              </div>
+
+              {/* Card 3: Financeiro Rápido (Só Admin) */}
+              {currentUser.role === "admin" ? (
+                <div className="bg-neutral-900 border border-white/10 p-6 rounded-2xl">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="p-3 bg-green-500/10 rounded-lg text-green-500"><TrendingUp size={24}/></div>
+                    <span className="text-xl font-bold text-green-500">R$ {currM.gross.toLocaleString('pt-BR', {compactDisplay: "short", notation: "compact"})}</span>
+                  </div>
+                  <h3 className="font-bold text-lg mb-1">Faturamento</h3>
+                  <p className="text-sm text-neutral-500">Acumulado deste mês</p>
+                </div>
+              ) : (
+                <div className="bg-neutral-900 border border-white/10 p-6 rounded-2xl flex items-center justify-center text-neutral-600">
+                  <span className="text-sm">Acesso Financeiro Restrito</span>
+                </div>
+              )}
+            </div>
+
+            {/* Lista Rápida de Tarefas */}
+            <h3 className="text-sm font-bold uppercase text-neutral-500 mb-4 tracking-widest">Minhas Atividades Recentes</h3>
+            <div className="bg-neutral-900/50 border border-white/5 rounded-2xl overflow-hidden">
+              {tasks.slice(0, 5).map(task => (
+                <div key={task.id} className="p-4 border-b border-white/5 flex justify-between items-center hover:bg-white/5 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-2 h-2 rounded-full ${task.priority === 'high' ? 'bg-red-500' : task.priority === 'medium' ? 'bg-yellow-500' : 'bg-green-500'}`} />
+                    <span className="font-bold text-sm">{task.title}</span>
+                    <span className="text-xs text-neutral-500 bg-black px-2 py-1 rounded">{task.client}</span>
+                  </div>
+                  <span className="text-xs text-neutral-500 uppercase">{task.status}</span>
+                </div>
+              ))}
+              {tasks.length === 0 && <div className="p-6 text-center text-neutral-500">Nenhuma tarefa encontrada.</div>}
+            </div>
+          </div>
+        )}
+
         {/* --- PROJETOS (KANBAN) --- */}
         {activeTab === "projects" && (
           <div className="flex h-full">
@@ -334,27 +395,58 @@ export default function AdminPage() {
                <Kpi label="Lucro Caixa" val={currM.safeProfit} color="text-green-400" highlight />
              </div>
 
-             <div className="bg-neutral-900/50 border border-white/5 p-6 rounded-2xl mb-8 flex gap-4">
-                <input type="date" value={newTransDate} onChange={e => setNewTransDate(e.target.value)} className="bg-black border border-white/10 rounded-lg p-3 text-white"/>
-                <input value={newTransDesc} onChange={e => setNewTransDesc(e.target.value)} placeholder="Descrição" className="bg-black border border-white/10 rounded-lg p-3 text-white flex-1"/>
-                <select value={newTransType} onChange={e => setNewTransType(e.target.value as any)} className="bg-black border border-white/10 rounded-lg p-3 text-neutral-400"><option value="income">Entrada (+)</option><option value="expense">Saída (-)</option></select>
-                <input type="number" value={newTransAmount} onChange={e => setNewTransAmount(e.target.value)} placeholder="Valor R$" className="bg-black border border-white/10 rounded-lg p-3 text-white w-32"/>
-                {newTransType === "income" && <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={newTransInvoice} onChange={e => setNewTransInvoice(e.target.checked)} className="hidden"/><div className={`w-5 h-5 border rounded ${newTransInvoice ? "bg-purple-600 border-purple-600" : "border-white/20"}`}></div><span className="text-xs">NF?</span></label>}
-                <button onClick={addTrans} className="bg-purple-600 px-6 rounded-lg font-bold"><Plus/></button>
+             {/* FORMULÁRIO FINANCEIRO COM CAMPO DE ENTREGA */}
+             <div className="bg-neutral-900/50 border border-white/5 p-6 rounded-2xl mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                  <div className="md:col-span-2">
+                    <input type="date" value={newTransDate} onChange={e => setNewTransDate(e.target.value)} className="w-full bg-black border border-white/10 rounded-lg p-3 text-white text-sm" />
+                  </div>
+                  <div className="md:col-span-3">
+                    <input value={newTransDesc} onChange={e => setNewTransDesc(e.target.value)} placeholder="Cliente / Descrição" className="w-full bg-black border border-white/10 rounded-lg p-3 text-white text-sm" />
+                  </div>
+                  <div className="md:col-span-3">
+                    <input value={newTransDelivery} onChange={e => setNewTransDelivery(e.target.value)} placeholder="O que foi entregue?" className="w-full bg-black border border-white/10 rounded-lg p-3 text-white text-sm" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <select value={newTransType} onChange={e => setNewTransType(e.target.value as any)} className="w-full bg-black border border-white/10 rounded-lg p-3 text-sm text-neutral-400">
+                      <option value="income">Entrada (+)</option>
+                      <option value="expense">Saída (-)</option>
+                    </select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <input type="number" value={newTransAmount} onChange={e => setNewTransAmount(e.target.value)} placeholder="R$ Valor" className="w-full bg-black border border-white/10 rounded-lg p-3 text-white text-sm" />
+                  </div>
+                </div>
+                <div className="flex items-center justify-between mt-4">
+                   {newTransType === "income" && (
+                     <label className="flex items-center gap-2 cursor-pointer ml-1">
+                       <input type="checkbox" checked={newTransInvoice} onChange={e => setNewTransInvoice(e.target.checked)} className="hidden"/>
+                       <div className={`w-5 h-5 border rounded flex items-center justify-center ${newTransInvoice ? "bg-purple-600 border-purple-600" : "border-white/20"}`}>
+                         {newTransInvoice && <CheckCircle2 size={12} className="text-white"/>}
+                       </div>
+                       <span className="text-xs text-neutral-400">Emitiu NF?</span>
+                     </label>
+                   )}
+                   <button onClick={addTrans} className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-2 rounded-lg font-bold text-sm ml-auto flex items-center gap-2">
+                     <Plus size={16}/> Lançar
+                   </button>
+                </div>
              </div>
 
              <div className="space-y-1">
-               {currentMonthTrans.length === 0 && <p className="text-neutral-600 text-center text-sm py-10">Nenhum lançamento neste mês.</p>}
                {currentMonthTrans.map(t => (
-                 <div key={t.id} className="flex justify-between p-4 bg-neutral-900/30 border border-white/5 rounded-xl">
+                 <div key={t.id} className="flex justify-between p-4 bg-neutral-900/30 border border-white/5 rounded-xl group hover:border-white/20 transition-all">
                     <div className="flex gap-4 items-center">
                       <div className={`w-2 h-2 rounded-full ${t.type === "income" ? "bg-green-500" : "bg-red-500"}`}/>
-                      <span className="text-neutral-500 text-sm font-mono">{new Date(t.date).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'})}</span>
-                      <span>{t.description}</span>
+                      <span className="text-neutral-500 text-sm font-mono w-12">{new Date(t.date).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'})}</span>
+                      <div className="flex flex-col">
+                        <span className="font-bold text-sm">{t.description}</span>
+                        {t.deliveryDetails && <span className="text-xs text-neutral-500">{t.deliveryDetails}</span>}
+                      </div>
                     </div>
                     <div className="flex gap-4 items-center">
                       <span className={`font-bold ${t.type === "income" ? "text-green-500" : "text-white"}`}>R$ {t.amount.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
-                      <button onClick={() => setTransactions(transactions.filter(x => x.id !== t.id))} className="text-neutral-600 hover:text-red-500"><Trash2 size={16}/></button>
+                      <button onClick={() => setTransactions(transactions.filter(x => x.id !== t.id))} className="text-neutral-600 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 size={16}/></button>
                     </div>
                  </div>
                ))}

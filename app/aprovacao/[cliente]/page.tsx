@@ -1,6 +1,6 @@
 import ApprovalClient from "./ApprovalClient";
 
-// ESSA FUNÇÃO GERA AS PÁGINAS HTML NO BUILD (SERVER SIDE)
+// GERAÇÃO ESTÁTICA (Necessário para o Build do Vercel)
 export async function generateStaticParams() {
   return [
     { cliente: "nicbr" },
@@ -8,7 +8,8 @@ export async function generateStaticParams() {
   ];
 }
 
-// ESTA É A PÁGINA QUE CHAMA O COMPONENTE CLIENTE
-export default function Page({ params }: { params: { cliente: string } }) {
-  return <ApprovalClient cliente={params.cliente} />;
+// CORREÇÃO: "params" agora é uma Promise (await)
+export default async function Page({ params }: { params: Promise<{ cliente: string }> }) {
+  const { cliente } = await params; // Espera o parâmetro carregar
+  return <ApprovalClient cliente={cliente} />;
 }

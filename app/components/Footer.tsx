@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Instagram, Youtube, Linkedin, ArrowUpRight } from "lucide-react";
+import { Instagram, Youtube, Linkedin } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -34,7 +34,6 @@ export default function Footer() {
               <li><Link href="/academy" className="hover:text-purple-400 transition-colors">Academy</Link></li>
               <li><Link href="/insights" className="hover:text-purple-400 transition-colors">Insights</Link></li>
               <li><Link href="/contato" className="hover:text-purple-400 transition-colors">Contato</Link></li>
-              <li><Link href="/admin" className="text-neutral-600 hover:text-neutral-400 transition-colors">Área Restrita</Link></li>
             </ul>
           </div>
 
@@ -48,7 +47,7 @@ export default function Footer() {
               </li>
               <li>
                 <span className="block text-neutral-500 text-xs mb-1">WhatsApp</span>
-                <a href="https://wa.me/5561900000000" className="hover:text-purple-400 transition-colors">+55 61 9 9999-9999</a>
+                <a href="https://wa.me/5561994079423" className="hover:text-purple-400 transition-colors">+55 61 9 9407-9423</a>
               </li>
             </ul>
           </div>
