@@ -4,14 +4,13 @@ import { useState } from "react";
 import { CheckCircle2, MessageSquare, Download, Play, Lock } from "lucide-react";
 import Image from "next/image";
 
-// BANCO DE DADOS FAKE (Aqui você cadastra os links dos clientes)
-// A chave "nicbr" é o que você vai digitar na URL.
+// BANCO DE DADOS FAKE
 const PROJECTS: any = {
   "nicbr": {
     client: "NIC.br",
-    logo: "/nicbr.png", // Certifique-se que essa imagem existe em 'public'
+    logo: "/nicbr.png",
     title: "Semana de Infraestrutura - Daily 01",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0", // Exemplo do YouTube
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0",
     version: "V1",
     date: "28/12/2025"
   },
@@ -26,20 +25,17 @@ const PROJECTS: any = {
 };
 
 export default function ApprovalPage({ params }: { params: { cliente: string } }) {
-  // Pega o nome que está na URL (ex: nicbr) e busca no "banco" acima
   const slug = params.cliente; 
   const project = PROJECTS[slug];
 
   const [password, setPassword] = useState("");
   const [isUnlocked, setIsUnlocked] = useState(false);
 
-  // SENHA DE PROTEÇÃO (Igual para todos por enquanto: "lampejo")
   const checkPassword = () => {
     if (password === "lampejo") setIsUnlocked(true);
     else alert("Senha incorreta");
   };
 
-  // Se digitar um cliente que não existe no PROJECTS
   if (!project) {
     return (
       <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
@@ -49,13 +45,11 @@ export default function ApprovalPage({ params }: { params: { cliente: string } }
     );
   }
 
-  // TELA DE BLOQUEIO (SENHA)
   if (!isUnlocked) {
     return (
       <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6">
         <div className="bg-neutral-900 p-8 rounded-2xl border border-white/10 w-full max-w-sm text-center">
           <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-6">
-             {/* Mostra a logo do cliente se existir, senão um icone */}
              <Lock className="text-black" />
           </div>
           <h1 className="text-xl font-bold mb-2">Área Restrita | {project.client}</h1>
@@ -72,14 +66,12 @@ export default function ApprovalPage({ params }: { params: { cliente: string } }
     );
   }
 
-  // TELA DO PROJETO (VÍDEO)
   return (
     <div className="min-h-screen bg-[#050505] text-white">
       {/* HEADER */}
       <header className="border-b border-white/10 p-6 flex justify-between items-center bg-black/50 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center overflow-hidden">
-            {/* Se a imagem não carregar, não quebra o layout */}
             <img src={project.logo} alt="logo" className="w-full h-full object-contain p-1" />
           </div>
           <div>
@@ -97,8 +89,6 @@ export default function ApprovalPage({ params }: { params: { cliente: string } }
       </header>
 
       <main className="max-w-5xl mx-auto p-6 md:p-10">
-        
-        {/* PLAYER DE VÍDEO (RESPONSIVO) */}
         <div className="aspect-video bg-black rounded-xl overflow-hidden border border-white/10 shadow-2xl mb-8 relative">
           <iframe 
             src={project.videoUrl} 
@@ -110,10 +100,7 @@ export default function ApprovalPage({ params }: { params: { cliente: string } }
           ></iframe>
         </div>
 
-        {/* BOTÕES DE AÇÃO */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-          {/* PAINEL DE DOWNLOADS */}
           <div className="bg-neutral-900/50 p-6 rounded-2xl border border-white/5 h-full">
             <h3 className="font-bold mb-4 flex items-center gap-2 text-sm uppercase tracking-wider text-neutral-400">
               <Download size={16}/> Arquivos
@@ -130,7 +117,6 @@ export default function ApprovalPage({ params }: { params: { cliente: string } }
             </div>
           </div>
 
-          {/* BOTÕES DE DECISÃO */}
           <div className="flex flex-col gap-3 h-full">
             <button 
               onClick={() => window.open(`https://wa.me/5561994079423?text=Olá! O vídeo "${project.title}" foi APROVADO! Podem seguir.`, '_blank')}
@@ -148,9 +134,18 @@ export default function ApprovalPage({ params }: { params: { cliente: string } }
               <MessageSquare size={28} className="text-neutral-500 group-hover:text-white group-hover:scale-110 transition-all" />
             </button>
           </div>
-
         </div>
       </main>
     </div>
   );
+}
+
+// --- A MÁGICA: ISSO CORRIGE O ERRO DE BUILD ---
+export async function generateStaticParams() {
+  // Retorna a lista de "clientes" que devem virar páginas estáticas HTML
+  // Isso deve bater com as chaves do objeto PROJECTS lá em cima
+  return [
+    { cliente: "nicbr" },
+    { cliente: "estadao" }
+  ];
 }
