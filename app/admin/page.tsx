@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { 
   Trash2, Plus, Printer, Lock, DollarSign, Layout, PieChart, ChevronLeft, ChevronRight,
   ArrowUpRight, ArrowDownRight, Clock, Tag, List, Type, ArrowRight, X, Edit, CheckCircle2,
-  Calendar, User
+  Calendar, User, FileText, Package // <--- Package icon para entregas
 } from "lucide-react";
 import Image from "next/image";
 
@@ -31,7 +31,8 @@ interface Transaction {
   type: "income" | "expense"; date: string; hasInvoice: boolean;
 }
 
-type BlockType = "header" | "text" | "items" | "total";
+// ADICIONADO TIPO 'DELIVERABLES'
+type BlockType = "header" | "text" | "deliverables" | "items" | "total";
 interface ProposalBlock { id: string; type: BlockType; content: any; }
 
 interface Task {
@@ -61,15 +62,17 @@ export default function AdminPage() {
   const [projectFilterClient, setProjectFilterClient] = useState("ALL");
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskClient, setNewTaskClient] = useState("");
-  const [editingTask, setEditingTask] = useState<Task | null>(null); // MODAL DE EDIÇÃO
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   // --- PROPOSTA ---
   const [clientName, setClientName] = useState("");
   const [blocks, setBlocks] = useState<ProposalBlock[]>([
     { id: "1", type: "header", content: { title: "Projeto Institucional", subtitle: "Narrativa Visual" } },
     { id: "2", type: "text", content: "A Lampejo propõe uma abordagem cinematográfica..." },
-    { id: "3", type: "items", content: [{ name: "Diária de Captação", price: 2500 }] },
-    { id: "4", type: "total", content: { obs: "Validade de 10 dias" } }
+    // EXEMPLO DE BLOCO DE ENTREGAS JÁ INICIADO
+    { id: "3", type: "deliverables", content: "- 1 Vídeo Manifesto (30s)\n- 5 Pílulas para Reels\n- Cobertura Fotográfica" },
+    { id: "4", type: "items", content: [{ name: "Diária de Captação", price: 2500 }] },
+    { id: "5", type: "total", content: { obs: "Validade de 10 dias" } }
   ]);
 
   // --- PERSISTÊNCIA ---
@@ -99,7 +102,22 @@ export default function AdminPage() {
     } else alert("Dados incorretos.");
   };
 
-  // FINANCEIRO
+  // FINANCEIRO: CHANGE MONTH FIX
+  const changeMonth = (offset: number) => {
+    const newDate = new Date(selectedDate);
+    newDate.setMonth(newDate.getMonth() + offset);
+    setSelectedDate(newDate);
+    
+    // ATUALIZA A DATA DO FORMULÁRIO PARA O MÊS SELECIONADO (DIA 01 ou MANTÉM DIA ATUAL SE MESMO MÊS)
+    const today = new Date();
+    let day = today.getDate();
+    // Se o mês selecionado não é o atual, seta dia 01 para evitar confusão, ou mantém dia se preferir
+    // Vamos setar para o dia atual mas no mês novo, ou dia 28 se for fevereiro, pra evitar crash de data
+    const safeDay = day > 28 ? 28 : day; 
+    const newFormDate = new Date(newDate.getFullYear(), newDate.getMonth(), safeDay);
+    setNewTransDate(newFormDate.toISOString().split('T')[0]);
+  };
+
   const getMonthData = (date: Date) => transactions.filter(t => {
     const d = new Date(t.date); return d.getMonth() === date.getMonth() && d.getFullYear() === date.getFullYear();
   });
@@ -151,7 +169,17 @@ export default function AdminPage() {
   // PROPOSTA
   const getLogo = (name: string) => CLIENT_LOGOS[name.toLowerCase().trim()] || null;
   const updateBlock = (id: string, content: any) => setBlocks(blocks.map(b => b.id === id ? { ...b, content } : b));
-  const addBlock = (type: BlockType) => setBlocks([...blocks, { id: Date.now().toString(), type, content: type === "items" ? [{name:"", price:0}] : "" }]);
+  
+  const addBlock = (type: BlockType) => {
+    // Inicialização inteligente do conteúdo
+    let content: any = "";
+    if (type === "items") content = [{name:"", price:0}];
+    if (type === "header") content = { title: "Título", subtitle: "Subtítulo" };
+    if (type === "total") content = { obs: "" };
+    if (type === "deliverables") content = "- Item 1\n- Item 2"; // Template padrão para entregas
+
+    setBlocks([...blocks, { id: Date.now().toString(), type, content }]);
+  };
 
   // --- RENDER ---
   if (!currentUser) return (
@@ -218,7 +246,7 @@ export default function AdminPage() {
                     status={status} 
                     tasks={filteredTasks} 
                     onMove={moveTask} 
-                    onEdit={setEditingTask} // ABRE O MODAL
+                    onEdit={setEditingTask}
                   />
                 ))}
               </div>
@@ -291,9 +319,9 @@ export default function AdminPage() {
                <div>
                   <p className="text-xs uppercase text-purple-400 font-bold mb-2">Fluxo de Caixa</p>
                   <div className="flex items-center gap-4">
-                    <button onClick={() => setSelectedDate(d => { const n = new Date(d); n.setMonth(n.getMonth()-1); return n;})}><ChevronLeft/></button>
+                    <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-white/10 rounded-full"><ChevronLeft/></button>
                     <h2 className="text-3xl font-bold w-64 text-center capitalize">{selectedDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</h2>
-                    <button onClick={() => setSelectedDate(d => { const n = new Date(d); n.setMonth(n.getMonth()+1); return n;})}><ChevronRight/></button>
+                    <button onClick={() => changeMonth(1)} className="p-2 hover:bg-white/10 rounded-full"><ChevronRight/></button>
                   </div>
                </div>
                <button onClick={() => setShowReport(true)} className="bg-white text-black px-6 py-3 rounded-full font-bold text-sm">MODO APRESENTAÇÃO</button>
@@ -316,6 +344,7 @@ export default function AdminPage() {
              </div>
 
              <div className="space-y-1">
+               {currentMonthTrans.length === 0 && <p className="text-neutral-600 text-center text-sm py-10">Nenhum lançamento neste mês.</p>}
                {currentMonthTrans.map(t => (
                  <div key={t.id} className="flex justify-between p-4 bg-neutral-900/30 border border-white/5 rounded-xl">
                     <div className="flex gap-4 items-center">
@@ -358,7 +387,13 @@ export default function AdminPage() {
               <div className="p-6 border-b border-white/5">
                 <h3 className="font-bold text-lg mb-4">Construtor</h3>
                 <input value={clientName} onChange={e => setClientName(e.target.value)} placeholder="Nome do Cliente (ex: NIC.br)" className="w-full bg-black border border-white/10 rounded-lg p-3 text-sm text-white mb-4" />
-                <div className="grid grid-cols-2 gap-2"><button onClick={() => addBlock('text')} className="bg-white/5 p-3 rounded-lg text-xs font-bold flex flex-col items-center gap-1 border border-white/5"><Type size={16} /> Texto</button><button onClick={() => addBlock('items')} className="bg-white/5 p-3 rounded-lg text-xs font-bold flex flex-col items-center gap-1 border border-white/5"><List size={16} /> Preços</button><button onClick={() => addBlock('total')} className="bg-white/5 p-3 rounded-lg text-xs font-bold flex flex-col items-center gap-1 border border-white/5"><DollarSign size={16} /> Total</button><button onClick={() => window.print()} className="bg-purple-600 text-white p-3 rounded-lg text-xs font-bold flex flex-col items-center gap-1 col-span-1"><Printer size={16} /> PDF</button></div>
+                <div className="grid grid-cols-2 gap-2">
+                   <button onClick={() => addBlock('text')} className="bg-white/5 p-3 rounded-lg text-xs font-bold flex flex-col items-center gap-1 border border-white/5 hover:bg-white/10"><Type size={16} /> Texto</button>
+                   <button onClick={() => addBlock('deliverables')} className="bg-white/5 p-3 rounded-lg text-xs font-bold flex flex-col items-center gap-1 border border-white/5 hover:bg-white/10"><Package size={16} /> Entregas</button>
+                   <button onClick={() => addBlock('items')} className="bg-white/5 p-3 rounded-lg text-xs font-bold flex flex-col items-center gap-1 border border-white/5 hover:bg-white/10"><List size={16} /> Preços</button>
+                   <button onClick={() => addBlock('total')} className="bg-white/5 p-3 rounded-lg text-xs font-bold flex flex-col items-center gap-1 border border-white/5 hover:bg-white/10"><DollarSign size={16} /> Total</button>
+                   <button onClick={() => window.print()} className="bg-purple-600 text-white p-3 rounded-lg text-xs font-bold flex flex-col items-center gap-1 col-span-2 mt-2"><Printer size={16} /> GERAR PDF</button>
+                </div>
               </div>
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
                  {blocks.map((b) => (
@@ -367,6 +402,7 @@ export default function AdminPage() {
                       <span className="text-[10px] uppercase text-neutral-500 font-bold mb-2 block">{b.type}</span>
                       {b.type === 'header' && (<><input value={b.content.title} onChange={e => updateBlock(b.id, {...b.content, title: e.target.value})} className="bg-transparent w-full border-b border-white/20 text-sm mb-2"/><input value={b.content.subtitle} onChange={e => updateBlock(b.id, {...b.content, subtitle: e.target.value})} className="bg-transparent w-full border-b border-white/20 text-xs"/></>)}
                       {b.type === 'text' && <textarea value={b.content} onChange={e => updateBlock(b.id, e.target.value)} className="bg-transparent w-full border border-white/10 rounded p-2 text-sm text-neutral-300"/>}
+                      {b.type === 'deliverables' && (<><label className="text-xs text-neutral-500">Lista de Entregas:</label><textarea value={b.content} rows={5} onChange={e => updateBlock(b.id, e.target.value)} className="bg-transparent w-full border border-white/10 rounded p-2 text-sm text-neutral-300 mt-1 font-mono text-xs"/></>)}
                       {b.type === 'items' && <div>{b.content.map((it:any, i:number) => <div key={i} className="flex gap-2 mb-1"><input value={it.name} onChange={e=>{const n=[...b.content];n[i].name=e.target.value;updateBlock(b.id,n)}} className="flex-1 bg-transparent border-b border-white/20 text-xs"/><input value={it.price} type="number" onChange={e=>{const n=[...b.content];n[i].price=e.target.value;updateBlock(b.id,n)}} className="w-16 bg-transparent border-b border-white/20 text-xs text-right"/></div>)}<button onClick={()=>updateBlock(b.id,[...b.content,{name:"",price:0}])} className="text-xs text-purple-400 font-bold mt-2">+ Item</button></div>}
                    </div>
                  ))}
@@ -390,6 +426,17 @@ export default function AdminPage() {
                         <div key={b.id}>
                            {b.type === 'header' && <div className="mb-8"><h2 className="text-5xl font-bold leading-tight mb-2">{b.content.title}</h2><p className="text-xl text-neutral-500 font-serif italic">{b.content.subtitle}</p></div>}
                            {b.type === 'text' && <div className="text-lg leading-relaxed text-justify whitespace-pre-wrap font-serif text-neutral-800">{b.content}</div>}
+                           
+                           {/* BLOCO DE ENTREGAS ESTILO MAJOR */}
+                           {b.type === 'deliverables' && (
+                             <div className="mb-8">
+                               <h4 className="text-sm font-bold uppercase tracking-widest text-black mb-4">Entregáveis</h4>
+                               <div className="text-base leading-relaxed text-neutral-700 whitespace-pre-wrap font-medium">
+                                 {b.content}
+                               </div>
+                             </div>
+                           )}
+
                            {b.type === 'items' && <div className="my-8 border-t border-black pt-4"><table className="w-full text-sm"><thead><tr className="text-left uppercase text-xs font-bold text-neutral-400 border-b border-neutral-300"><th className="pb-2">Item</th><th className="pb-2 text-right">Valor</th></tr></thead><tbody className="divide-y divide-neutral-200">{b.content.map((it:any,i:number)=><tr key={i}><td className="py-3 font-medium">{it.name}</td><td className="py-3 text-right">R$ {Number(it.price).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td></tr>)}</tbody></table></div>}
                            {b.type === 'total' && <div className="bg-black text-white p-8 mt-12 rounded-sm shadow-2xl"><div className="flex justify-between items-end"><div><p className="text-xs uppercase tracking-widest text-neutral-400 mb-1">Investimento</p><p className="text-xs text-neutral-500">{b.content.obs}</p></div><div className="text-5xl font-bold tracking-tighter">R$ {blocks.filter(x=>x.type==='items').reduce((acc,curr)=>acc+curr.content.reduce((a:any,c:any)=>a+Number(c.price),0),0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</div></div></div>}
                         </div>
