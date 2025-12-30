@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Link from "next/link";
@@ -72,48 +72,40 @@ const TESTIMONIALS = [
 
 export default function Home() {
   const [activeService, setActiveService] = useState(0);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const playVideo = async () => {
-      if (videoRef.current) {
-        try {
-          videoRef.current.muted = true;
-          await videoRef.current.play();
-        } catch (err) {
-          console.log("Autoplay bloqueado:", err);
-        }
-      }
-    };
-    playVideo();
-  }, []);
 
   return (
     <div className="bg-black text-white selection:bg-purple-500/30 overflow-x-hidden">
       <Navbar />
 
       <main>
-        {/* SESSÃO 1: HERO - Ajustado para h-[100dvh] e pt-20 no mobile */}
+        {/* SESSÃO 1: HERO */}
         <section className="h-[100dvh] flex flex-col justify-center items-center px-6 text-center relative overflow-hidden pt-20 md:pt-0">
           
-          {/* VIDEO BACKGROUND */}
-          <div className="absolute inset-0 z-0">
-            <div className="absolute inset-0 bg-black/60 z-10" />
-            <video 
-              ref={videoRef}
-              autoPlay 
-              loop 
-              muted 
-              playsInline 
-              className="w-full h-full object-cover opacity-60"
-              poster="/poster-home.jpg"
-              preload="auto"
-            >
-              <source src="/hero.mp4" type="video/mp4" />
-            </video>
-          </div>
+          {/* EFEITO GLOW PULSANDO (VOLTOU) */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] h-[500px] bg-purple-900/20 blur-[120px] rounded-full animate-glow pointer-events-none z-0" />
+
+          {/* VIDEO BACKGROUND (HTML PURO PARA COMPATIBILIDADE TOTAL) */}
+          <div 
+            className="absolute inset-0 z-0"
+            dangerouslySetInnerHTML={{
+              __html: `
+                <div class="absolute inset-0 bg-black/60 z-10"></div>
+                <video 
+                  class="w-full h-full object-cover opacity-60" 
+                  autoplay 
+                  loop 
+                  muted 
+                  playsinline 
+                  webkit-playsinline
+                  poster="/poster-home.jpg"
+                >
+                  <source src="/hero.mp4" type="video/mp4" />
+                </video>
+              `
+            }}
+          />
           
-          {/* Título reduzido para text-4xl no mobile para evitar sobreposição */}
+          {/* CONTEÚDO */}
           <h1 className="text-4xl md:text-8xl font-bold tracking-tighter mb-8 z-10 animate-in slide-in-from-bottom-10 fade-in duration-1000 leading-tight">
             AUDIOVISUAL NA <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
