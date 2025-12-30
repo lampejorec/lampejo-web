@@ -93,8 +93,8 @@ export default function Home() {
       <Navbar />
 
       <main>
-        {/* SESSÃO 1: HERO */}
-        <section className="h-screen flex flex-col justify-center items-center px-6 text-center relative overflow-hidden">
+        {/* SESSÃO 1: HERO - Ajustado para h-[100dvh] e pt-20 no mobile */}
+        <section className="h-[100dvh] flex flex-col justify-center items-center px-6 text-center relative overflow-hidden pt-20 md:pt-0">
           
           {/* VIDEO BACKGROUND */}
           <div className="absolute inset-0 z-0">
@@ -113,23 +113,24 @@ export default function Home() {
             </video>
           </div>
           
-          <h1 className="text-5xl md:text-8xl font-bold tracking-tighter mb-8 z-10 animate-in slide-in-from-bottom-10 fade-in duration-1000">
+          {/* Título reduzido para text-4xl no mobile para evitar sobreposição */}
+          <h1 className="text-4xl md:text-8xl font-bold tracking-tighter mb-8 z-10 animate-in slide-in-from-bottom-10 fade-in duration-1000 leading-tight">
             AUDIOVISUAL NA <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
               VELOCIDADE DO AGORA.
             </span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-neutral-300 max-w-3xl mb-12 z-10 leading-relaxed animate-in slide-in-from-bottom-10 fade-in duration-1000 delay-200">
+          <p className="text-lg md:text-2xl text-neutral-300 max-w-3xl mb-12 z-10 leading-relaxed animate-in slide-in-from-bottom-10 fade-in duration-1000 delay-200">
             Nascemos para encurtar a distância entre a ideia e o play. <br className="hidden md:block"/>
             Sem burocracia. Apenas fluxo e qualidade cinematográfica.
           </p>
           
-          <div className="flex flex-col md:flex-row gap-6 z-10 animate-in slide-in-from-bottom-10 fade-in duration-1000 delay-300">
-            <Link href="/portfolio" className="bg-white text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-neutral-200 transition-all hover:scale-105">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-6 z-10 animate-in slide-in-from-bottom-10 fade-in duration-1000 delay-300 w-full md:w-auto px-4 md:px-0">
+            <Link href="/portfolio" className="bg-white text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-neutral-200 transition-all hover:scale-105 w-full md:w-auto">
               VER TRABALHOS
             </Link>
-            <Link href="/contato" className="border border-white/20 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white/10 transition-all flex items-center gap-2">
+            <Link href="/contato" className="border border-white/20 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white/10 transition-all flex items-center justify-center gap-2 w-full md:w-auto">
               INICIAR PROJETO <ArrowRight size={18}/>
             </Link>
           </div>
