@@ -74,4 +74,11 @@ body {
   nav, aside, button, header, .no-print {
     display: none !important;
   }
+}@keyframes pulse-glow {
+  0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+.animate-glow {
+  animation: pulse-glow 6s ease-in-out infinite;
 }

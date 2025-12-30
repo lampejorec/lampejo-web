@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Link from "next/link";
@@ -72,6 +72,21 @@ const TESTIMONIALS = [
 
 export default function Home() {
   const [activeService, setActiveService] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // EFEITO: Força o play no Desktop e Mobile
+  useEffect(() => {
+    if (videoRef.current) {
+      // 1. Garante que está mudo (Crucial para Chrome Desktop)
+      videoRef.current.muted = true;
+      videoRef.current.defaultMuted = true;
+      
+      // 2. Tenta dar o play
+      videoRef.current.play().catch((error) => {
+        console.error("Autoplay falhou:", error);
+      });
+    }
+  }, []);
 
   return (
     <div className="bg-black text-white selection:bg-purple-500/30 overflow-x-hidden">
@@ -81,44 +96,42 @@ export default function Home() {
         {/* SESSÃO 1: HERO */}
         <section className="h-[100dvh] flex flex-col justify-center items-center px-6 text-center relative overflow-hidden pt-20 md:pt-0">
           
-          {/* EFEITO GLOW PULSANDO (VOLTOU) */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] h-[500px] bg-purple-900/20 blur-[120px] rounded-full animate-glow pointer-events-none z-0" />
+          {/* BACKGROUND: Vídeo + Glow */}
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            {/* Overlay Escuro */}
+            <div className="absolute inset-0 bg-black/60 z-20 pointer-events-none" />
 
-          {/* VIDEO BACKGROUND (HTML PURO PARA COMPATIBILIDADE TOTAL) */}
-          <div 
-            className="absolute inset-0 z-0"
-            dangerouslySetInnerHTML={{
-              __html: `
-                <div class="absolute inset-0 bg-black/60 z-10"></div>
-                <video 
-                  class="w-full h-full object-cover opacity-60" 
-                  autoplay 
-                  loop 
-                  muted 
-                  playsinline 
-                  webkit-playsinline
-                  poster="/poster-home.jpg"
-                >
-                  <source src="/hero.mp4" type="video/mp4" />
-                </video>
-              `
-            }}
-          />
+            {/* Glow Pulsante (Atrás do vídeo ou na frente com blend-mode) */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-purple-900/30 blur-[100px] rounded-full animate-glow z-10 pointer-events-none mix-blend-screen" />
+            
+            {/* VÍDEO COMPONENTE REACT (Refatorado) */}
+            <video 
+              ref={videoRef}
+              className="absolute inset-0 w-full h-full object-cover opacity-70 z-0"
+              autoPlay 
+              loop 
+              muted 
+              playsInline 
+              poster="/poster-home.jpg"
+            >
+              <source src="/hero.mp4" type="video/mp4" />
+            </video>
+          </div>
           
-          {/* CONTEÚDO */}
-          <h1 className="text-4xl md:text-8xl font-bold tracking-tighter mb-8 z-10 animate-in slide-in-from-bottom-10 fade-in duration-1000 leading-tight">
+          {/* CONTEÚDO (Texto) */}
+          <h1 className="text-4xl md:text-8xl font-bold tracking-tighter mb-8 z-30 animate-in slide-in-from-bottom-10 fade-in duration-1000 leading-tight relative">
             AUDIOVISUAL NA <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
               VELOCIDADE DO AGORA.
             </span>
           </h1>
           
-          <p className="text-lg md:text-2xl text-neutral-300 max-w-3xl mb-12 z-10 leading-relaxed animate-in slide-in-from-bottom-10 fade-in duration-1000 delay-200">
+          <p className="text-lg md:text-2xl text-neutral-300 max-w-3xl mb-12 z-30 leading-relaxed animate-in slide-in-from-bottom-10 fade-in duration-1000 delay-200 relative">
             Nascemos para encurtar a distância entre a ideia e o play. <br className="hidden md:block"/>
             Sem burocracia. Apenas fluxo e qualidade cinematográfica.
           </p>
           
-          <div className="flex flex-col md:flex-row gap-4 md:gap-6 z-10 animate-in slide-in-from-bottom-10 fade-in duration-1000 delay-300 w-full md:w-auto px-4 md:px-0">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-6 z-30 animate-in slide-in-from-bottom-10 fade-in duration-1000 delay-300 w-full md:w-auto px-4 md:px-0 relative">
             <Link href="/portfolio" className="bg-white text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-neutral-200 transition-all hover:scale-105 w-full md:w-auto">
               VER TRABALHOS
             </Link>
