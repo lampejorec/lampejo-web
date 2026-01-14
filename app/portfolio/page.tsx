@@ -23,6 +23,7 @@ interface ClientData {
   logo: string;
   description: string; 
   fullDescription?: string;
+  invert?: boolean;
   projects: Project[];
 }
 
