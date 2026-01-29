@@ -11,7 +11,7 @@ export default function Footer() {
           <div className="space-y-6">
             <h2 className="text-3xl font-bold tracking-tighter">LAMPEJO</h2>
             <p className="text-neutral-400 text-sm leading-relaxed max-w-xs">
-              Produtora audiovisual focada em narrativas de impacto e velocidade de entrega. Do roteiro ao play.
+              Somos o ponto de convergência entre a luz e a ideia.
             </p>
             <div className="flex gap-4">
               <a href="https://instagram.com" target="_blank" className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all">

@@ -67,7 +67,7 @@ export default function Navbar() {
           
           {/* LOGO */}
           <Link href="/" className="text-2xl font-bold tracking-tighter hover:text-purple-500 transition-colors z-50">
-            LAMPEJO
+            LENZ AUDIOVISUAL
           </Link>
 
           {/* MENU DESKTOP */}

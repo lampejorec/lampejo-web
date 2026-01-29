@@ -106,9 +106,10 @@ export default function Home() {
           
           {/* CAMADA 3: CONTEÚDO */}
           <h1 className="text-4xl md:text-8xl font-bold tracking-tighter mb-8 z-10 animate-in slide-in-from-bottom-10 fade-in duration-1000 leading-tight relative">
-            AUDIOVISUAL NA <br />
+            SOMOS O PONTO DE 
+            CONVERGÊNCIA <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
-              VELOCIDADE DO AGORA.
+              ENTRE A LUZ E A IDEIA.
             </span>
           </h1>
           
