@@ -1,21 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image"; // IMPORTANTE: Otimização de imagens
+import Image from "next/image"; 
 import Link from "next/link";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { ArrowRight, Play, Quote } from "lucide-react";
 
-// DADOS DOS SERVIÇOS
+// DADOS (Mantidos aqui para não quebrar o código, mas não serão usados visualmente)
 const SERVICES = [
-  {
-    id: 0,
-    title: "Manifesto LENZ",
-    description: "Nossa essência em movimento. Entenda como pensamos e por que fazemos o que fazemos.",
-    tag: "Showreel 2025",
-    videoTitle: "ASSISTA AO MANIFESTO"
-  },
   {
     id: 1,
     title: "Cobertura Real-Time",
@@ -79,12 +72,10 @@ export default function Home() {
       <Navbar />
 
       <main>
-        {/* SESSÃO 1: HERO OTIMIZADO PARA MOBILE */}
+        {/* SESSÃO 1: HERO */}
         <section className="h-[100dvh] flex flex-col justify-center items-center px-6 text-center relative overflow-hidden pt-20 md:pt-0">
           
-          {/* OTIMIZAÇÃO: Use Imagem estática leve para Mobile, Vídeo pesado só Desktop */}
-          
-          {/* DESKTOP VIDEO (Escondido no mobile) */}
+          {/* DESKTOP VIDEO */}
           <div className="hidden md:block absolute inset-0 z-0">
             <video 
               className="w-full h-full object-cover opacity-60" 
@@ -92,30 +83,28 @@ export default function Home() {
               loop 
               muted 
               playsInline 
-              poster="/poster-home.jpg" // Imagem carregada antes do video
+              poster="/poster-home.jpg"
             >
               <source src="/hero.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-black/60"></div>
           </div>
 
-          {/* MOBILE IMAGE (Prioridade LCP) */}
+          {/* MOBILE IMAGE */}
           <div className="md:hidden absolute inset-0 z-0">
             <Image
-              src="/poster-home.jpg" // Use uma imagem leve, de preferência webp
+              src="/poster-home.jpg"
               alt="Lenz Background"
               fill
-              priority // Força carregamento imediato
+              priority
               className="object-cover opacity-50"
               sizes="100vw"
             />
             <div className="absolute inset-0 bg-black/40"></div>
           </div>
           
-          {/* CAMADA DE GLOW */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-purple-900/20 blur-[100px] rounded-full animate-glow z-0 pointer-events-none mix-blend-screen" />
 
-          {/* CONTEÚDO */}
           <div className="relative z-10 max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-8xl font-bold tracking-tighter mb-6 animate-in slide-in-from-bottom-10 fade-in duration-1000 leading-tight">
               SOMOS O PONTO DE 
@@ -141,35 +130,55 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SESSÃO 2: CLIENTES OTIMIZADA */}
-        <section className="py-12 bg-white overflow-hidden">
-          <div className="w-full">
-            <p className="text-xs text-neutral-500 font-bold uppercase tracking-[0.2em] mb-8 text-center">
-              Marcas que confiam no nosso olhar
-            </p>
-            
-            <div className="flex overflow-hidden relative w-full group mask-linear-fade">
-              {/* OTIMIZAÇÃO: Next/Image nos logos */}
-              <div className="flex animate-scroll min-w-full flex-shrink-0 justify-around items-center gap-12 px-4">
-                {[...CLIENTS, ...CLIENTS].map((client, index) => (
-                  <div key={index} className="relative w-32 h-14 grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100 flex items-center justify-center">
-                    <Image 
-                      src={client.logo} 
-                      alt={client.name}
-                      width={140}
-                      height={70}
-                      className="object-contain w-auto h-full max-w-full"
-                      loading="lazy" // Carrega só quando aparece
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
+{/* SESSÃO 2: CLIENTES OTIMIZADA */}
+<section className="py-12 bg-white overflow-hidden">
+  <div className="w-full">
+    <p className="text-xs text-neutral-500 font-bold uppercase tracking-[0.2em] mb-8 text-center">
+      Marcas que confiam no nosso olhar
+    </p>
+    
+    {/* CORREÇÃO DO SCROLL INFINITO AQUI */}
+    <div className="flex overflow-hidden relative w-full group mask-linear-fade">
+      
+      {/* FAIXA 1 */}
+      <div className="flex animate-scroll min-w-full flex-shrink-0 justify-around items-center gap-12 px-4">
+        {CLIENTS.map((client, index) => (
+          <div key={`a-${index}`} className="relative w-32 h-14 grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100 flex items-center justify-center">
+            <Image 
+              src={client.logo} 
+              alt={client.name}
+              width={140}
+              height={70}
+              className="object-contain w-auto h-full max-w-full"
+              loading="lazy"
+            />
           </div>
-        </section>
+        ))}
+      </div>
 
-        {/* SESSÃO 2.5: DEPOIMENTOS */}
-        <section className="py-20 bg-neutral-900 border-y border-white/5">
+      {/* FAIXA 2 (Cópia exata para cobrir o buraco) */}
+      <div className="flex animate-scroll min-w-full flex-shrink-0 justify-around items-center gap-12 px-4" aria-hidden="true">
+        {CLIENTS.map((client, index) => (
+          <div key={`b-${index}`} className="relative w-32 h-14 grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100 flex items-center justify-center">
+            <Image 
+              src={client.logo} 
+              alt={client.name}
+              width={140}
+              height={70}
+              className="object-contain w-auto h-full max-w-full"
+              loading="lazy"
+            />
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+        {/* --- SEÇÕES OCULTAS TEMPORARIAMENTE (DEPOIMENTOS, SERVIÇOS E ACADEMY) --- */}
+
+        {/* <section className="py-20 bg-neutral-900 border-y border-white/5">
           <div className="max-w-6xl mx-auto px-6">
             <div className="grid md:grid-cols-2 gap-8">
               {TESTIMONIALS.map((t, i) => (
@@ -186,16 +195,13 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SESSÃO 3: SERVIÇOS (LAYOUT SHIFT REDUZIDO) */}
         <section className="py-32 px-6 max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             
-            {/* Esquerda */}
             <div className="order-2 md:order-1">
               <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-none mb-8">
                 CRIAMOS NARRATIVAS <br /> QUE PRENDEM.
               </h2>
-              {/* Altura fixa para evitar pulo de layout quando muda texto */}
               <div className="min-h-[100px]">
                   <p className="text-lg text-neutral-400 leading-relaxed mb-8">
                     {SERVICES[activeService].description}
@@ -217,9 +223,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Direita */}
             <div className="relative order-1 md:order-2 aspect-video md:aspect-[4/5] bg-neutral-900 rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
-               {/* Usamos cor de fundo como fallback enquanto carrega */}
                <div className="absolute inset-0 bg-neutral-900" /> 
                
                <div className={`absolute inset-0 transition-opacity duration-700 bg-gradient-to-br from-neutral-800 to-black ${activeService % 2 === 0 ? 'opacity-100' : 'opacity-80'}`} />
@@ -248,7 +252,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SESSÃO 4: ACADEMY */}
         <section className="py-32 bg-neutral-950 border-t border-white/5 relative">
           <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
             <span className="inline-block px-4 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-400 text-xs font-bold tracking-widest uppercase mb-6">
@@ -269,6 +272,8 @@ export default function Home() {
             </Link>
           </div>
         </section>
+        */}
+
       </main>
       
       <Footer />
