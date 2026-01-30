@@ -9,7 +9,7 @@ export default function Footer() {
           
           {/* COLUNA 1: MARCA */}
           <div className="space-y-6">
-            <h2 className="text-3xl font-bold tracking-tighter">LAMPEJO</h2>
+            <h2 className="text-3xl font-bold tracking-tighter">LENZ</h2>
             <p className="text-neutral-400 text-sm leading-relaxed max-w-xs">
               Somos o ponto de convergência entre a luz e a ideia.
             </p>
@@ -43,7 +43,7 @@ export default function Footer() {
             <ul className="space-y-4 text-sm">
               <li>
                 <span className="block text-neutral-500 text-xs mb-1">Novos Projetos</span>
-                <a href="mailto:contato@lampejo.rec.br" className="hover:text-purple-400 transition-colors">contato@lampejo.rec.br</a>
+                <a href="mailto:contato@lenzaudiovisual.com.br" className="hover:text-purple-400 transition-colors">contato@lenzaudiovisual.com.br</a>
               </li>
               <li>
                 <span className="block text-neutral-500 text-xs mb-1">WhatsApp</span>
@@ -65,9 +65,9 @@ export default function Footer() {
 
         {/* BOTTOM */}
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-neutral-600">© 2025 Lampejo Audiovisual. Todos os direitos reservados.</p>
+          <p className="text-xs text-neutral-600">© 2025 LENZ Audiovisual. Todos os direitos reservados.</p>
           <p className="text-xs text-neutral-700 flex items-center gap-1">
-            Design by <span className="text-white font-bold">Lampejo</span>
+            Design by <span className="text-white font-bold">LENZ</span>
           </p>
         </div>
       </div>

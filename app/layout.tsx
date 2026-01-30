@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "LENZ | Audiovisual na velocidade do agora",
     description: "Encurtamos a distância entre a ideia e o play.",
-    url: "https://lampejo.rec.br",
+    url: "https://lenzaudiovisual.com.br",
     siteName: "LENZ",
     locale: "pt_BR",
     type: "website",

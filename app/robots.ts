@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/admin/',
     },
-    sitemap: 'https://lampejo.rec.br/sitemap.xml',
+    sitemap: 'https://lenzaudiovisual.com.br/sitemap.xml',
   }
 }

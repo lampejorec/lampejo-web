@@ -42,7 +42,7 @@ export default function LinksPage() {
     },
     {
       id: 3,
-      label: "Lampejo Academy",
+      label: "LENZ Academy",
       sublabel: "Cursos, LUTs e Materiais",
       url: "/academy",
       icon: GraduationCap,
@@ -83,14 +83,14 @@ export default function LinksPage() {
           <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full opacity-75 blur transition duration-1000 group-hover:opacity-100 group-hover:duration-200"></div>
           <div className="relative w-28 h-28 rounded-full bg-black border-2 border-white/10 overflow-hidden flex items-center justify-center p-4">
              {/* Se quiser usar a logo do arquivo, descomente a linha abaixo e comente o texto */}
-             {/* <Image src="/logo-lampejo.png" alt="Lampejo" width={100} height={100} className="object-contain" /> */}
-             <span className="font-bold text-2xl tracking-tighter">LAMPEJO</span>
+             {/* <Image src="/logo-lenz.png" alt="LENZ" width={100} height={100} className="object-contain" /> */}
+             <span className="font-bold text-2xl tracking-tighter">LENZ</span>
           </div>
         </div>
 
         {/* HEADER TEXT */}
         <div className="text-center mb-10">
-          <h1 className="text-2xl font-bold tracking-tight mb-2">Lampejo Audiovisual</h1>
+          <h1 className="text-2xl font-bold tracking-tight mb-2">LENZ Audiovisual</h1>
           <p className="text-neutral-400 text-sm max-w-xs mx-auto">
             Transformamos ideias em narrativas visuais que prendem e convertem.
           </p>
@@ -148,7 +148,7 @@ export default function LinksPage() {
         </div>
 
         <p className="mt-8 text-xs text-neutral-600 font-mono uppercase tracking-widest">
-          © 2025 Lampejo.rec.br
+          © 2025 lenzaudiovisual.com.br
         </p>
 
       </div>

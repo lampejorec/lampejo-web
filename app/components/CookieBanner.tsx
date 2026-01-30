@@ -7,14 +7,14 @@ export default function CookieBanner() {
 
   useEffect(() => {
     // Verifica se já aceitou
-    const consent = localStorage.getItem('lampejo-cookie-consent');
+    const consent = localStorage.getItem('LENZ-cookie-consent');
     if (!consent) {
       setShowBanner(true);
     }
   }, []);
 
   const acceptCookies = () => {
-    localStorage.setItem('lampejo-cookie-consent', 'true');
+    localStorage.setItem('LENZ-cookie-consent', 'true');
     setShowBanner(false);
   };
 

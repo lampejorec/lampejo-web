@@ -10,7 +10,7 @@ export default function AcademyPage() {
       <main className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
         <div className="text-center mb-20">
           <span className="text-purple-400 font-bold tracking-widest uppercase text-xs mb-4 block">
-            Lampejo Academy
+            LENZ Academy
           </span>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-white mb-6">
             O SEGREDO DO <br />

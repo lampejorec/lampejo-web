@@ -16,7 +16,7 @@ export default function Politica() {
           </p>
 
           <p className="mb-6">
-            A <strong>LAMPEJO AUDIOVISUAL</strong> preza pela transparência e segurança dos dados de seus usuários. 
+            A <strong>LENZ AUDIOVISUAL</strong> preza pela transparência e segurança dos dados de seus usuários. 
             Esta Política de Privacidade descreve como coletamos e utilizamos suas informações ao acessar nosso portfólio.
           </p>
 
@@ -42,7 +42,7 @@ export default function Politica() {
           <div className="mt-12 pt-12 border-t border-white/10">
             <p className="text-sm">
               Dúvidas? Entre em contato: <br />
-              <span className="text-white">contato@lampejo.rec.br</span>
+              <span className="text-white">contato@lenzaudiovisual.com.br</span>
             </p>
           </div>
         </div>

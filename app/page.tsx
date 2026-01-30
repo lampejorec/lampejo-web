@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image"; // IMPORTANTE: Otimização de imagens
+import Link from "next/link";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Link from "next/link";
 import { ArrowRight, Play, Quote } from "lucide-react";
 
 // DADOS DOS SERVIÇOS
@@ -59,7 +60,7 @@ const CLIENTS = [
 
 const TESTIMONIALS = [
   {
-    text: "A Lampejo entregou em 2 horas o que outras agências pediam 2 dias. A qualidade cinematográfica no real-time é surreal.",
+    text: "A LENZ entregou em 2 horas o que outras agências pediam 2 dias. A qualidade cinematográfica no real-time é surreal.",
     author: "Diretor de Marketing",
     company: "NIC.br"
   },
@@ -74,81 +75,92 @@ export default function Home() {
   const [activeService, setActiveService] = useState(0);
 
   return (
-    <div className="bg-black text-white selection:bg-purple-500/30 overflow-x-hidden">
+    <div className="bg-black text-white selection:bg-purple-500/30 overflow-x-hidden font-sans">
       <Navbar />
 
       <main>
-        {/* SESSÃO 1: HERO */}
+        {/* SESSÃO 1: HERO OTIMIZADO PARA MOBILE */}
         <section className="h-[100dvh] flex flex-col justify-center items-center px-6 text-center relative overflow-hidden pt-20 md:pt-0">
           
-          {/* CAMADA 1: GLOW (Animação de fundo) */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-purple-900/30 blur-[100px] rounded-full animate-glow z-0 pointer-events-none mix-blend-screen" />
+          {/* OTIMIZAÇÃO: Use Imagem estática leve para Mobile, Vídeo pesado só Desktop */}
+          
+          {/* DESKTOP VIDEO (Escondido no mobile) */}
+          <div className="hidden md:block absolute inset-0 z-0">
+            <video 
+              className="w-full h-full object-cover opacity-60" 
+              autoPlay 
+              loop 
+              muted 
+              playsInline 
+              poster="/poster-home.jpg" // Imagem carregada antes do video
+            >
+              <source src="/hero.mp4" type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-black/60"></div>
+          </div>
 
-          {/* CAMADA 2: VÍDEO (HTML Puro Injetado) */}
-          <div 
-            className="absolute inset-0 z-0"
-            dangerouslySetInnerHTML={{
-              __html: `
-                <video 
-                  class="w-full h-full object-cover opacity-60" 
-                  autoplay 
-                  loop 
-                  muted 
-                  playsinline 
-                  poster="/poster-home.jpg"
-                >
-                  <source src="/hero.mp4" type="video/mp4" />
-                </video>
-                <div class="absolute inset-0 bg-black/60"></div>
-              `
-            }}
-          />
+          {/* MOBILE IMAGE (Prioridade LCP) */}
+          <div className="md:hidden absolute inset-0 z-0">
+            <Image
+              src="/poster-home.jpg" // Use uma imagem leve, de preferência webp
+              alt="Lenz Background"
+              fill
+              priority // Força carregamento imediato
+              className="object-cover opacity-50"
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-black/40"></div>
+          </div>
           
-          {/* CAMADA 3: CONTEÚDO */}
-          <h1 className="text-4xl md:text-8xl font-bold tracking-tighter mb-8 z-10 animate-in slide-in-from-bottom-10 fade-in duration-1000 leading-tight relative">
-            SOMOS O PONTO DE 
-            CONVERGÊNCIA <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
-              ENTRE A LUZ E A IDEIA.
-            </span>
-          </h1>
-          
-          <p className="text-lg md:text-2xl text-neutral-300 max-w-3xl mb-12 z-10 leading-relaxed animate-in slide-in-from-bottom-10 fade-in duration-1000 delay-200 relative">
-            Nascemos para encurtar a distância entre a ideia e o play. <br className="hidden md:block"/>
-            Sem burocracia. Apenas fluxo e qualidade cinematográfica.
-          </p>
-          
-          <div className="flex flex-col md:flex-row gap-4 md:gap-6 z-10 animate-in slide-in-from-bottom-10 fade-in duration-1000 delay-300 w-full md:w-auto px-4 md:px-0 relative">
-            <Link href="/portfolio" className="bg-white text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-neutral-200 transition-all hover:scale-105 w-full md:w-auto">
-              VER TRABALHOS
-            </Link>
-            <Link href="/contato" className="border border-white/20 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white/10 transition-all flex items-center justify-center gap-2 w-full md:w-auto">
-              INICIAR PROJETO <ArrowRight size={18}/>
-            </Link>
+          {/* CAMADA DE GLOW */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-purple-900/20 blur-[100px] rounded-full animate-glow z-0 pointer-events-none mix-blend-screen" />
+
+          {/* CONTEÚDO */}
+          <div className="relative z-10 max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-8xl font-bold tracking-tighter mb-6 animate-in slide-in-from-bottom-10 fade-in duration-1000 leading-tight">
+              SOMOS O PONTO DE 
+              CONVERGÊNCIA <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">
+                ENTRE A LUZ E A IDEIA.
+              </span>
+            </h1>
+            
+            <p className="text-lg md:text-2xl text-neutral-300 mb-10 leading-relaxed animate-in slide-in-from-bottom-10 fade-in duration-1000 delay-200 px-4">
+              Nascemos para encurtar a distância entre a ideia e o play. <br className="hidden md:block"/>
+              Sem burocracia. Apenas fluxo e qualidade cinematográfica.
+            </p>
+            
+            <div className="flex flex-col md:flex-row justify-center gap-4 animate-in slide-in-from-bottom-10 fade-in duration-1000 delay-300 w-full px-4 md:px-0">
+              <Link href="/portfolio" className="bg-white text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-neutral-200 transition-transform active:scale-95 w-full md:w-auto">
+                VER TRABALHOS
+              </Link>
+              <Link href="/contato" className="border border-white/20 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white/10 transition-all flex items-center justify-center gap-2 w-full md:w-auto">
+                INICIAR PROJETO <ArrowRight size={18}/>
+              </Link>
+            </div>
           </div>
         </section>
 
-        {/* SESSÃO 2: CLIENTES */}
+        {/* SESSÃO 2: CLIENTES OTIMIZADA */}
         <section className="py-12 bg-white overflow-hidden">
-          <div className="max-w-full mx-auto">
-            <p className="text-sm text-neutral-500 font-bold uppercase tracking-widest mb-8 text-center">
+          <div className="w-full">
+            <p className="text-xs text-neutral-500 font-bold uppercase tracking-[0.2em] mb-8 text-center">
               Marcas que confiam no nosso olhar
             </p>
-            <div className="flex overflow-hidden relative w-full group">
-              <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
-              <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
-              
-              <div className="flex animate-scroll min-w-full flex-shrink-0 justify-around items-center gap-10 px-10">
-                {CLIENTS.map((client, index) => (
-                  <div key={index} className="flex items-center justify-center w-32 md:w-48 h-20 grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100">
-                    <img src={client.logo} alt={client.name} className="max-h-14 w-auto object-contain" />
-                  </div>
-                ))}
-              </div>
-              <div className="flex animate-scroll min-w-full flex-shrink-0 justify-around items-center gap-10 px-10" aria-hidden="true">
-                {CLIENTS.map((client, index) => (
-                  <div key={`dup-${index}`} className="flex items-center justify-center w-32 md:w-48 h-20 grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100">
-                    <img src={client.logo} alt={client.name} className="max-h-14 w-auto object-contain" />
+            
+            <div className="flex overflow-hidden relative w-full group mask-linear-fade">
+              {/* OTIMIZAÇÃO: Next/Image nos logos */}
+              <div className="flex animate-scroll min-w-full flex-shrink-0 justify-around items-center gap-12 px-4">
+                {[...CLIENTS, ...CLIENTS].map((client, index) => (
+                  <div key={index} className="relative w-32 h-14 grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100 flex items-center justify-center">
+                    <Image 
+                      src={client.logo} 
+                      alt={client.name}
+                      width={140}
+                      height={70}
+                      className="object-contain w-auto h-full max-w-full"
+                      loading="lazy" // Carrega só quando aparece
+                    />
                   </div>
                 ))}
               </div>
@@ -163,10 +175,10 @@ export default function Home() {
               {TESTIMONIALS.map((t, i) => (
                 <div key={i} className="bg-black/50 border border-white/10 p-8 rounded-2xl relative">
                   <Quote className="text-purple-500 mb-4 opacity-50" size={32} />
-                  <p className="text-lg md:text-xl text-neutral-300 italic mb-6">"{t.text}"</p>
+                  <p className="text-lg md:text-xl text-neutral-300 italic mb-6 leading-relaxed">"{t.text}"</p>
                   <div>
                     <p className="font-bold text-white">{t.author}</p>
-                    <p className="text-sm text-purple-400 font-bold uppercase tracking-widest">{t.company}</p>
+                    <p className="text-xs text-purple-400 font-bold uppercase tracking-widest">{t.company}</p>
                   </div>
                 </div>
               ))}
@@ -174,27 +186,31 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SESSÃO 3: O QUE FAZEMOS */}
+        {/* SESSÃO 3: SERVIÇOS (LAYOUT SHIFT REDUZIDO) */}
         <section className="py-32 px-6 max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             
             {/* Esquerda */}
-            <div>
+            <div className="order-2 md:order-1">
               <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-none mb-8">
                 CRIAMOS NARRATIVAS <br /> QUE PRENDEM.
               </h2>
-              <p className="text-lg text-neutral-400 leading-relaxed mb-8 min-h-[60px]">
-                {SERVICES[activeService].description}
-              </p>
+              {/* Altura fixa para evitar pulo de layout quando muda texto */}
+              <div className="min-h-[100px]">
+                  <p className="text-lg text-neutral-400 leading-relaxed mb-8">
+                    {SERVICES[activeService].description}
+                  </p>
+              </div>
               
               <div className="space-y-4">
                 {SERVICES.map((item, index) => (
                   <button
                     key={item.id}
                     onClick={() => setActiveService(index)}
-                    className={`w-full flex items-center gap-4 text-xl font-medium border-b border-white/10 pb-4 transition-all text-left group ${activeService === index ? 'text-white' : 'text-neutral-500 hover:text-neutral-300'}`}
+                    className={`w-full flex items-center gap-4 text-lg md:text-xl font-medium border-b border-white/10 pb-4 transition-colors text-left group ${activeService === index ? 'text-white' : 'text-neutral-600 hover:text-neutral-400'}`}
+                    aria-label={`Ver serviço ${item.title}`}
                   >
-                    <span className={`w-2 h-2 rounded-full transition-all ${activeService === index ? 'bg-blue-500 scale-125' : 'bg-neutral-700'}`} />
+                    <span className={`w-2 h-2 rounded-full transition-transform ${activeService === index ? 'bg-blue-500 scale-125' : 'bg-neutral-800'}`} />
                     {item.title}
                   </button>
                 ))}
@@ -202,21 +218,27 @@ export default function Home() {
             </div>
 
             {/* Direita */}
-            <div className="relative aspect-square md:aspect-[4/5] lg:aspect-video rounded-3xl overflow-hidden border border-white/10 group cursor-pointer bg-neutral-900 shadow-2xl transition-all duration-500">
-               <div className={`absolute inset-0 bg-gradient-to-br from-neutral-800 to-black transition-all duration-500 ${activeService % 2 === 0 ? 'opacity-100' : 'opacity-80'}`}></div>
+            <div className="relative order-1 md:order-2 aspect-video md:aspect-[4/5] bg-neutral-900 rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+               {/* Usamos cor de fundo como fallback enquanto carrega */}
+               <div className="absolute inset-0 bg-neutral-900" /> 
+               
+               <div className={`absolute inset-0 transition-opacity duration-700 bg-gradient-to-br from-neutral-800 to-black ${activeService % 2 === 0 ? 'opacity-100' : 'opacity-80'}`} />
                
                <div className="absolute inset-0 flex flex-col justify-between p-8 md:p-12 z-20">
                  <div className="flex justify-between items-start">
-                   <span className="bg-blue-500/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">
+                   <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm">
                      {SERVICES[activeService].tag}
                    </span>
                  </div>
 
                  <div>
-                   <div className="w-16 h-16 md:w-20 md:h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 mb-6 group-hover:bg-blue-600 group-hover:border-blue-500 group-hover:scale-110 transition-all duration-300">
+                   <button 
+                     className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 mb-6 hover:bg-blue-600 hover:border-blue-500 hover:scale-110 transition-all duration-300"
+                     aria-label="Play Case"
+                   >
                      <Play size={24} className="text-white fill-current ml-1"/>
-                   </div>
-                   <h3 className="text-2xl md:text-3xl font-bold text-white leading-none tracking-tighter">
+                   </button>
+                   <h3 className="text-2xl md:text-3xl font-bold text-white leading-none tracking-tighter max-w-[80%]">
                      {SERVICES[activeService].videoTitle}
                    </h3>
                  </div>
@@ -227,20 +249,20 @@ export default function Home() {
         </section>
 
         {/* SESSÃO 4: ACADEMY */}
-        <section className="py-32 bg-neutral-900/30 border-t border-white/5">
-          <div className="max-w-7xl mx-auto px-6 text-center">
+        <section className="py-32 bg-neutral-950 border-t border-white/5 relative">
+          <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
             <span className="inline-block px-4 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-400 text-xs font-bold tracking-widest uppercase mb-6">
-              LAMPEJO ACADEMY
+              LENZ ACADEMY
             </span>
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-8">
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6">
               COMPARTILHAMOS <br /> O CÓDIGO FONTE.
             </h2>
-            <p className="text-xl text-neutral-400 max-w-2xl mx-auto mb-12">
-              Não guardamos segredos. Acesse nossos cursos, LUTs e processos de trabalho na Lampejo Academy.
+            <p className="text-xl text-neutral-400 max-w-2xl mx-auto mb-10">
+              Não guardamos segredos. Acesse nossos cursos, LUTs e processos de trabalho na LENZ Academy.
             </p>
             <Link 
               href="/academy" 
-              className="inline-flex items-center gap-2 text-white border-b border-white pb-1 hover:text-purple-400 hover:border-purple-400 transition-all text-lg"
+              className="inline-flex items-center gap-2 text-white border-b border-white/30 pb-1 hover:text-purple-400 hover:border-purple-400 transition-colors text-lg"
             >
               EXPLORAR A ACADEMY 
               <ArrowRight size={18} />

@@ -61,10 +61,10 @@ export const COURSES = [
   },
   {
     id: 4,
-    slug: "lampejo-luts-pack",
-    title: "Lampejo Essentials LUTs Pack",
+    slug: "LENZ-luts-pack",
+    title: "LENZ Essentials LUTs Pack",
     shortDescription: "Meus presets pessoais para Sony, Canon e Blackmagic.",
-    fullDescription: "Anos de refinamento em um clique. Este pacote contém os 10 LUTs que eu uso em 90% das produções da Lampejo. Otimizados para converter Log para Rec709 com uma estética moderna, pretos lavados na medida certa e pele natural.",
+    fullDescription: "Anos de refinamento em um clique. Este pacote contém os 10 LUTs que eu uso em 90% das produções da LENZ. Otimizados para converter Log para Rec709 com uma estética moderna, pretos lavados na medida certa e pele natural.",
     price: "R$ 67,00",
     installments: "À vista",
     videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Exemplo

@@ -233,7 +233,7 @@ export default async function ArticlePage({
           {/* RODAPÉ DO ARTIGO - SUBSTITUA ESSA PARTE FINAL */}
           <div className="mt-20 pt-10 border-t border-white/10 flex flex-col md:flex-row gap-6 justify-between items-center">
             <div className="text-sm text-neutral-500">
-              Escrito por <strong className="text-white">Equipe Lampejo</strong>
+              Escrito por <strong className="text-white">Equipe LENZ</strong>
             </div>
             
             {/* O BOTÃO NOVO */}

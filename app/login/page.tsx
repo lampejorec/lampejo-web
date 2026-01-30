@@ -26,8 +26,8 @@ export default function LoginPage({
         <div className="flex justify-center mb-8">
           <div className="w-40 relative h-12">
             <Image 
-              src="/logo-lampejo.png" 
-              alt="Lampejo" 
+              src="/logo-lenz.png" 
+              alt="LENZ" 
               fill 
               className="object-contain"
             />
@@ -36,7 +36,7 @@ export default function LoginPage({
 
         <div className="text-center mb-8">
           <h1 className="text-xl font-bold tracking-tight">Acesso Restrito</h1>
-          <p className="text-sm text-neutral-400 mt-2">Gestão Lampejo Audiovisual</p>
+          <p className="text-sm text-neutral-400 mt-2">Gestão LENZ Audiovisual</p>
         </div>
 
         {/* Formulário */}
@@ -47,7 +47,7 @@ export default function LoginPage({
               name="email"
               type="email"
               required
-              placeholder="admin@lampejo.rec.br"
+              placeholder="admin@lenzaudiovisual.com.br"
               className="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-sm focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all placeholder:text-neutral-700"
             />
           </div>
